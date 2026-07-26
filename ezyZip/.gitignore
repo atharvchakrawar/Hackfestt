@@ -1,0 +1,7 @@
+node_modules/
+server/node_modules/
+web/node_modules/
+web/.next/
+server/uploads/
+server/dev-db-snapshot.json
+startup-debug.log
