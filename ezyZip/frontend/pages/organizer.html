@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Organizer Dashboard — HackConnect</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#050810;--bg2:#0b0f1a;--bg3:#111827;--accent:#FF4D6D;--accent2:#00F5A0;--accent3:#7B61FF;--text:#F0F4FF;--muted:#8892A4;--border:rgba(255,255,255,0.07);--card:rgba(255,255,255,0.04)}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;display:flex;min-height:100vh}
+.sidenav{width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;padding:1.25rem 0.9rem}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;margin-bottom:2rem;padding:0 0.4rem;color:var(--text)}
+.logo span{color:var(--accent)}
+.nav-item{display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.7rem;border-radius:9px;color:var(--muted);font-size:0.855rem;font-weight:500;cursor:pointer;transition:all 0.15s;margin-bottom:0.1rem}
+.nav-item:hover{background:rgba(255,255,255,0.04);color:var(--text)}
+.nav-item.active{background:rgba(123,97,255,0.12);color:var(--accent3)}
+.nav-sect{font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);padding:0 0.5rem;margin:1.25rem 0 0.4rem}
+.bottom{margin-top:auto;border:1px solid var(--border);border-radius:11px;padding:0.85rem;background:var(--card);display:flex;align-items:center;gap:0.65rem;cursor:pointer;transition:all 0.15s}
+.bottom:hover{border-color:rgba(123,97,255,0.35);background:rgba(123,97,255,0.06)}
+.av{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--accent3),#9a80ff);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.75rem;color:#fff;flex-shrink:0}
+.av-name{font-size:0.82rem;font-weight:600}
+.verified{display:inline-flex;align-items:center;gap:0.2rem;background:rgba(0,245,160,0.1);border:1px solid rgba(0,245,160,0.2);color:var(--accent2);font-size:0.62rem;font-weight:700;padding:0.15rem 0.45rem;border-radius:100px;margin-top:2px}
+.main{margin-left:220px;flex:1}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 2rem;border-bottom:1px solid var(--border);background:var(--bg2)}
+.topbar h1{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800}
+.btn{padding:0.5rem 1.1rem;border-radius:8px;font-size:0.835rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;border:none;text-decoration:none}
+.btn-purple{background:var(--accent3);color:#fff}
+.btn-purple:hover{background:#6a50ff}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.btn-ghost:hover{color:var(--text)}
+
+.tabs-bar{display:flex;border-bottom:1px solid var(--border);background:var(--bg2);padding:0 2rem}
+.tab{padding:0.85rem 1.1rem;font-size:0.855rem;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;white-space:nowrap}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--accent3);border-color:var(--accent3)}
+
+.tab-content{display:none;padding:2rem}
+.tab-content.active{display:block}
+
+/* METRICS */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
+.metric{background:var(--bg3);border:1px solid var(--border);border-radius:13px;padding:1.2rem 1.4rem}
+.metric-icon{font-size:1.2rem;margin-bottom:0.65rem}
+.metric-val{font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800}
+.metric-lbl{font-size:0.75rem;color:var(--muted);margin-top:0.2rem;letter-spacing:0.04em}
+.metric-sub{font-size:0.72rem;color:var(--accent2);margin-top:0.25rem}
+
+/* TABLE */
+.tbl-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:13px;overflow:hidden;margin-bottom:1.5rem}
+.tbl-head{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 1.4rem;border-bottom:1px solid var(--border)}
+.tbl-head h2{font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700}
+table{width:100%;border-collapse:collapse}
+th{padding:0.8rem 1.4rem;text-align:left;font-size:0.72rem;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border)}
+td{padding:0.9rem 1.4rem;font-size:0.85rem;border-bottom:1px solid rgba(255,255,255,0.03)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,0.015)}
+.pill{padding:0.22rem 0.7rem;border-radius:100px;font-size:0.7rem;font-weight:700}
+.p-live{background:rgba(0,245,160,0.1);color:var(--accent2);border:1px solid rgba(0,245,160,0.2)}
+.p-upcoming{background:rgba(123,97,255,0.1);color:#a78fff;border:1px solid rgba(123,97,255,0.2)}
+.p-draft{background:rgba(255,255,255,0.06);color:var(--muted);border:1px solid var(--border)}
+.p-submitted{background:rgba(255,165,0,0.1);color:#ffb347;border:1px solid rgba(255,165,0,0.25)}
+.p-confirmed{background:rgba(0,245,160,0.1);color:var(--accent2);border:1px solid rgba(0,245,160,0.2)}
+.p-pending{background:rgba(123,97,255,0.1);color:#a78fff;border:1px solid rgba(123,97,255,0.2)}
+.p-rejected{background:rgba(255,77,109,0.1);color:var(--accent);border:1px solid rgba(255,77,109,0.2)}
+.action-btns{display:flex;gap:0.4rem}
+.act{background:transparent;border:1px solid var(--border);color:var(--muted);padding:0.28rem 0.7rem;border-radius:6px;font-size:0.73rem;cursor:pointer;transition:all 0.15s;font-family:'DM Sans',sans-serif}
+.act:hover{color:var(--text);border-color:rgba(255,255,255,0.2)}
+.act.approve{border-color:rgba(0,245,160,0.3);color:var(--accent2)}
+.act.approve:hover{background:rgba(0,245,160,0.08)}
+.act.reject{border-color:rgba(255,77,109,0.3);color:var(--accent)}
+.act.reject:hover{background:rgba(255,77,109,0.08)}
+
+/* FORM */
+.form-card{background:var(--bg3);border:1px solid var(--border);border-radius:13px;padding:1.75rem;margin-bottom:1.25rem}
+.form-card h3{font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;margin-bottom:1.25rem;padding-bottom:0.85rem;border-bottom:1px solid var(--border)}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:0.85rem}
+.fgroup{margin-bottom:1.1rem}
+.flabel{display:block;font-size:0.72rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted);margin-bottom:0.35rem}
+.finput,.fselect,.ftextarea{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:9px;padding:0.65rem 0.9rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.875rem;outline:none;transition:border-color 0.2s}
+.finput:focus,.fselect:focus,.ftextarea:focus{border-color:rgba(123,97,255,0.5)}
+.finput::placeholder,.ftextarea::placeholder{color:var(--muted);opacity:0.6}
+.ftextarea{resize:vertical;min-height:85px;line-height:1.6}
+.fselect,.finput,.fselect option{background-color:#111827;color:#F0F4FF}
+.fselect option:checked{background-color:#1e2a45}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem 1.25rem;margin-top:1rem}
+.detail-item label{display:block;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.2rem}
+.detail-item span{font-size:.875rem;color:var(--text);word-break:break-word}
+.detail-full{grid-column:1/-1}
+.members-list{margin-top:.35rem;font-size:.82rem;color:var(--muted);line-height:1.6}
+.tbl-wrap{overflow-x:auto}
+table{min-width:900px}
+.tag-wrap{display:flex;flex-wrap:wrap;gap:0.35rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:9px;padding:0.45rem;min-height:44px;align-items:center}
+.tag-pill{background:rgba(123,97,255,0.15);border:1px solid rgba(123,97,255,0.3);color:#a78fff;font-size:0.75rem;padding:0.2rem 0.55rem;border-radius:6px;display:flex;align-items:center;gap:0.25rem}
+.tag-pill button{background:none;border:none;color:#a78fff;cursor:pointer;font-size:0.8rem;line-height:1}
+.tag-input{background:none;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.855rem;flex:1;padding:0.1rem 0.2rem;min-width:100px}
+.tag-input::placeholder{color:var(--muted);opacity:0.6}
+.form-actions{display:flex;gap:0.85rem;align-items:center;margin-top:0.75rem}
+.submit-btn{background:var(--accent3);color:#fff;border:none;padding:0.8rem 2rem;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:800;cursor:pointer;transition:all 0.2s}
+.submit-btn:hover{background:#6a50ff;transform:translateY(-1px)}
+.draft-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:0.8rem 1.25rem;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.875rem;cursor:pointer;transition:all 0.2s}
+.draft-btn:hover{color:var(--text)}
+
+/* FILTERS BAR */
+.filter-row{display:flex;gap:0.75rem;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center}
+.filter-row .finput,.filter-row .fselect{max-width:220px}
+.badge-num{display:inline-flex;align-items:center;justify-content:center;background:rgba(255,77,109,0.15);color:var(--accent);font-size:0.7rem;font-weight:700;width:20px;height:20px;border-radius:100px;margin-left:0.4rem}
+
+/* SCREENSHOT PREVIEW */
+.screenshot-link{color:var(--accent3);font-size:0.78rem;cursor:pointer;text-decoration:underline}
+
+/* AUTH GATE */
+.auth-gate{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;text-align:center;padding:2rem;gap:1rem}
+.auth-gate h2{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800}
+.auth-gate p{color:var(--muted);max-width:400px;line-height:1.6}
+
+/* OVERLAY */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity 0.25s}
+.overlay.reject-layer{z-index:300}
+.overlay.open{opacity:1;pointer-events:all}
+.modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:18px;width:92%;max-width:420px;padding:2rem;position:relative;transform:translateY(20px);transition:all 0.25s}
+.overlay.open .modal-box{transform:none}
+.mc{position:absolute;top:1rem;right:1rem;background:var(--card);border:1px solid var(--border);color:var(--text);width:28px;height:28px;border-radius:7px;font-size:0.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.modal-title2{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;margin-bottom:0.3rem}
+.modal-sub2{color:var(--muted);font-size:0.855rem;margin-bottom:1.5rem}
+.modal-btn2{width:100%;padding:0.75rem;border-radius:9px;font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:800;cursor:pointer;border:none;color:#fff;transition:all 0.2s;margin-top:0.4rem}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid rgba(0,245,160,0.3);border-radius:11px;padding:0.85rem 1.1rem;display:flex;align-items:center;gap:0.6rem;font-size:0.855rem;z-index:999;transform:translateY(70px);opacity:0;transition:all 0.3s;max-width:320px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.err{border-color:rgba(255,77,109,0.3)}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,0.2);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;display:inline-block;vertical-align:middle;margin-right:5px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:800px){.sidenav{display:none}.main{margin-left:0}.metrics{grid-template-columns:repeat(2,1fr)}.frow{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="sidenav">
+  <a href="../index.html" class="logo" style="text-decoration:none;display:block">Hack<span>Fest</span></a>
+  <div class="nav-sect">Manage</div>
+  <div class="nav-item active" data-tab="overview" onclick="switchTab('overview')">📊 Dashboard</div>
+  <div class="nav-item" data-tab="post" onclick="switchTab('post')">➕ Post Event</div>
+  <div class="nav-item" data-tab="events" onclick="switchTab('events')">📋 My Events</div>
+  <div class="nav-item" data-tab="registrations" onclick="switchTab('registrations')">👥 Registrations <span class="badge-num" id="pendingBadge">0</span></div>
+  <div class="nav-sect">Account</div>
+  <div class="nav-item" onclick="doLogout()">🚪 Logout</div>
+  <div class="bottom" id="sideProfile" style="display:none" onclick="goToAccount()" title="View account details">
+    <div class="av" id="avInitials">?</div>
+    <div>
+      <div class="av-name" id="avName">–</div>
+      <div class="verified">✓ Organizer</div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <!-- LOGIN GATE -->
+  <div id="loginGate" class="auth-gate">
+    <div style="font-size:3rem">🏛️</div>
+    <h2>Organizer Login</h2>
+    <p>Access your event management dashboard, view registrations, approve payments, and post new events.</p>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:1.5rem;width:100%;max-width:360px">
+      <div class="fgroup"><label class="flabel">Email</label><input class="finput" id="lgEmail" type="email" placeholder="events@college.edu"></div>
+      <div class="fgroup"><label class="flabel">Password</label><input class="finput" id="lgPw" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <div style="background:rgba(255,77,109,0.08);border:1px solid rgba(255,77,109,0.2);border-radius:8px;padding:0.6rem 0.9rem;font-size:0.78rem;color:var(--accent);margin-bottom:1rem;display:none" id="lgErr"></div>
+      <button class="submit-btn" style="width:100%;padding:0.75rem" onclick="doLogin()">Login</button>
+      <div style="text-align:center;margin-top:0.85rem;font-size:0.82rem;color:var(--muted)">
+        Demo: <strong style="color:var(--text)">organizer@mit.edu</strong> / <strong style="color:var(--text)">organizer123</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD (hidden until login) -->
+  <div id="dashboardWrap" style="display:none">
+    <div class="topbar">
+      <h1 id="topbarTitle">Dashboard</h1>
+      <button class="btn btn-purple" onclick="switchTab('post')">+ Post New Event</button>
+    </div>
+    <div class="tabs-bar">
+      <div class="tab active" onclick="switchTab('overview')">Overview</div>
+      <div class="tab" onclick="switchTab('events')">My Events</div>
+      <div class="tab" onclick="switchTab('registrations')">Registrations</div>
+      <div class="tab" onclick="switchTab('post')">Post Event</div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="tab-content active" id="tab-overview">
+      <div class="metrics" id="metricsGrid">
+        <div class="metric"><div class="metric-icon">🎯</div><div class="metric-val" id="m-events">–</div><div class="metric-lbl">Events Posted</div></div>
+        <div class="metric"><div class="metric-icon">👥</div><div class="metric-val" id="m-regs">–</div><div class="metric-lbl">Total Registrations</div><div class="metric-sub" id="m-pending-sub"></div></div>
+        <div class="metric"><div class="metric-icon">✅</div><div class="metric-val" id="m-confirmed">–</div><div class="metric-lbl">Confirmed Payments</div></div>
+        <div class="metric"><div class="metric-icon">👁️</div><div class="metric-val" id="m-views">–</div><div class="metric-lbl">Total Event Views</div></div>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-head"><h2>My Events</h2><button class="btn btn-purple" style="font-size:0.8rem;padding:0.4rem 0.9rem" onclick="switchTab('post')">+ New</button></div>
+        <table><thead><tr><th>Event</th><th>Date</th><th>Regs</th><th>Fee</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody id="overviewEventsBody"><tr><td colspan="6" style="color:var(--muted);text-align:center;padding:2rem">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- MY EVENTS -->
+    <div class="tab-content" id="tab-events">
+      <div class="tbl-wrap">
+        <div class="tbl-head"><h2>All My Events</h2><button class="btn btn-purple" style="font-size:0.8rem;padding:0.4rem 0.9rem" onclick="switchTab('post')">+ Post New</button></div>
+        <table><thead><tr><th>Event</th><th>Type</th><th>Date</th><th>City</th><th>Regs / Confirmed</th><th>Fee</th><th>Status</th></tr></thead>
+        <tbody id="eventsBody"><tr><td colspan="7" style="color:var(--muted);text-align:center;padding:2rem">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- REGISTRATIONS -->
+    <div class="tab-content" id="tab-registrations">
+      <div class="filter-row">
+        <select class="fselect" id="filterEvent" onchange="loadRegistrations()" style="max-width:260px"><option value="">All Events</option></select>
+        <select class="fselect" id="filterStatus" onchange="loadRegistrations()" style="max-width:180px">
+          <option value="">All Statuses</option>
+          <option value="payment_submitted">Awaiting Approval</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="pending_payment">Pending Payment</option>
+          <option value="free_confirmed">Free (Confirmed)</option>
+          <option value="rejected">Rejected</option>
+        </select>
+        <button class="btn btn-ghost" onclick="loadRegistrations()">🔄 Refresh</button>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-head"><h2>Registrations</h2><span style="font-size:0.82rem;color:var(--muted)" id="regCountLabel">–</span></div>
+        <table>
+          <thead><tr><th>Student</th><th>Event</th><th>Phone</th><th>Year</th><th>Team</th><th>Fee</th><th>UTR</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="regsBody"><tr><td colspan="9" style="color:var(--muted);text-align:center;padding:2rem">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ACCOUNT -->
+    <div class="tab-content" id="tab-account">
+      <div class="form-card" style="max-width:640px">
+        <h3>🏛️ Organizer Account</h3>
+        <div class="detail-grid" id="accountBody">
+          <div class="detail-item"><label>College / Organization</label><span id="accCollege">–</span></div>
+          <div class="detail-item"><label>Email</label><span id="accEmail">–</span></div>
+          <div class="detail-item"><label>City</label><span id="accCity">–</span></div>
+          <div class="detail-item"><label>UPI ID</label><span id="accUpi">–</span></div>
+          <div class="detail-item detail-full"><label>Role</label><span>Event Organizer</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POST EVENT -->
+    <div class="tab-content" id="tab-post">
+      <div style="max-width:860px">
+        <h2 style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;margin-bottom:0.3rem">Create New Event</h2>
+        <p style="color:var(--muted);font-size:0.875rem;margin-bottom:1.75rem">Fill in the details and publish to reach thousands of students.</p>
+
+        <div style="background:rgba(255,77,109,0.07);border:1px solid rgba(255,77,109,0.2);border-radius:10px;padding:0.85rem 1rem;font-size:0.82rem;color:var(--accent);margin-bottom:1.5rem;display:none" id="formErr"></div>
+        <div style="background:rgba(0,245,160,0.07);border:1px solid rgba(0,245,160,0.2);border-radius:10px;padding:0.85rem 1rem;font-size:0.82rem;color:var(--accent2);margin-bottom:1.5rem;display:none" id="formOk"></div>
+
+        <div class="form-card">
+          <h3>📋 Basic Info</h3>
+          <div class="frow">
+            <div class="fgroup"><label class="flabel">Event Name *</label><input class="finput" id="f_name" placeholder="e.g. HackMIT 5.0"></div>
+            <div class="fgroup"><label class="flabel">Event Type *</label>
+              <select class="fselect" id="f_type">
+                <option value="">Select…</option>
+                <option>Hackathon</option><option>Coding Contest</option><option>AI/ML</option>
+                <option>Design Sprint</option><option>Open Source</option><option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="fgroup"><label class="flabel">Description</label><textarea class="ftextarea" id="f_desc" placeholder="Describe the event theme, challenges, who should apply…"></textarea></div>
+          <div class="frow">
+            <div class="fgroup"><label class="flabel">College / Institution *</label><input class="finput" id="f_college" placeholder="MIT College of Engineering"></div>
+            <div class="fgroup"><label class="flabel">City *</label>
+              <select class="fselect" id="f_city"><option value="">Select…</option><option>Pune</option><option>Mumbai</option><option>Bangalore</option><option>Hyderabad</option><option>Chennai</option><option>Delhi</option><option>Kolkata</option><option>Jaipur</option><option>Other</option></select>
+            </div>
+          </div>
+          <div class="frow">
+            <div class="fgroup"><label class="flabel">Venue</label><input class="finput" id="f_venue" placeholder="Campus Auditorium, Block A"></div>
+            <div class="fgroup"><label class="flabel">Mode</label>
+              <select class="fselect" id="f_mode"><option>Offline</option><option>Online</option><option>Hybrid</option></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <h3>📅 Dates & Duration</h3>
+          <div class="frow">
+            <div class="fgroup"><label class="flabel">Start Date *</label><input class="finput" id="f_start" type="date"></div>
+            <div class="fgroup"><label class="flabel">End Date</label><input class="finput" id="f_end" type="date"></div>
+          </div>
+          <div class="frow">
+            <div class="fgroup"><label class="flabel">Duration (hours)</label><input class="finput" id="f_dur" type="number" placeholder="36"></div>
+            <div class="fgroup"><label class="flabel">Registration Deadline</label><input class="finput" id="f_deadline" type="date"></div>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <h3>👥 Team & Fees</h3>
+          <div class="frow">
+            <div class="fgroup"><label class="flabel">Min Team Size</label><input class="finput" id="f_mint" type="number" placeholder="2" value="2"></div>
+            <div class="fgroup"><label class="flabel">Max Team Size</label><input class="finput" id="f_maxt" type="number" placeholder="4" value="4"></div>
+          </div>
+          <div class="frow">
+            <div class="fgroup"><label class="flabel">Max Registrations</label><input class="finput" id="f_maxr" type="number" placeholder="200"></div>
+            <div class="fgroup"><label class="flabel">Registration Fee (₹, 0 = free)</label><input class="finput" id="f_fee" type="number" placeholder="0" value="0"></div>
+          </div>
+          <div class="fgroup"><label class="flabel">UPI ID for Payments</label><input class="finput" id="f_upi" placeholder="college@upi (leave blank to use account UPI)"></div>
+        </div>
+
+        <div class="form-card">
+          <h3>🏆 Prizes</h3>
+          <div class="frow">
+            <div class="fgroup"><label class="flabel">Total Prize Pool</label><input class="finput" id="f_prize" placeholder="₹1,50,000"></div>
+            <div class="fgroup"><label class="flabel">1st Prize</label><input class="finput" id="f_p1" placeholder="₹75,000"></div>
+          </div>
+          <div class="frow">
+            <div class="fgroup"><label class="flabel">2nd Prize</label><input class="finput" id="f_p2" placeholder="₹40,000"></div>
+            <div class="fgroup"><label class="flabel">3rd Prize</label><input class="finput" id="f_p3" placeholder="₹25,000"></div>
+          </div>
+          <div class="fgroup">
+            <label class="flabel">Tracks / Themes (press Enter)</label>
+            <div class="tag-wrap" id="tagWrap">
+              <input class="tag-input" id="tagInput" placeholder="Add track and press Enter…" onkeydown="addTag(event)">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <h3>📞 Contact</h3>
+          <div class="frow">
+            <div class="fgroup"><label class="flabel">Contact Email</label><input class="finput" id="f_cemail" type="email" placeholder="events@college.edu"></div>
+            <div class="fgroup"><label class="flabel">WhatsApp / Phone</label><input class="finput" id="f_cphone" placeholder="+91 98765 43210"></div>
+          </div>
+          <div class="frow">
+            <div class="fgroup"><label class="flabel">Website</label><input class="finput" id="f_web" type="url" placeholder="https://hackmit.in"></div>
+            <div class="fgroup"><label class="flabel">Devfolio / Unstop Link</label><input class="finput" id="f_devfolio" type="url" placeholder="https://devfolio.co/..."></div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="submit-btn" onclick="submitEvent('live')">🚀 Publish Event</button>
+          <button class="draft-btn" onclick="submitEvent('draft')">Save as Draft</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REJECT MODAL -->
+<div class="overlay reject-layer" id="rejectOverlay" onclick="if(event.target.id==='rejectOverlay')closeRejectModal()">
+  <div class="modal-box">
+    <button class="mc" onclick="closeRejectModal()">✕</button>
+    <div class="modal-title2">Reject Registration</div>
+    <div class="modal-sub2">Provide a reason so the student can retry.</div>
+    <div class="fgroup"><label class="flabel">Reason</label><input class="finput" id="rejectReason" placeholder="e.g. UTR not matching, wrong amount…"></div>
+    <button class="modal-btn2" style="background:var(--accent)" onclick="confirmReject()">Reject Registration</button>
+  </div>
+</div>
+
+<!-- REGISTRATION DETAIL MODAL -->
+<div class="overlay" id="detailOverlay" onclick="if(event.target.id==='detailOverlay')closeOverlay('detailOverlay')">
+  <div class="modal-box" style="max-width:580px;max-height:88vh;overflow-y:auto">
+    <button class="mc" onclick="closeOverlay('detailOverlay')">✕</button>
+    <div class="modal-title2" id="detailTitle">Registration Details</div>
+    <div class="modal-sub2" id="detailSub">Full student submission</div>
+    <div id="detailBody"></div>
+  </div>
+</div>
+
+<!-- SCREENSHOT MODAL -->
+<div class="overlay" id="ssOverlay" onclick="if(event.target.id==='ssOverlay')closeOverlay('ssOverlay')">
+  <div class="modal-box" style="max-width:500px">
+    <button class="mc" onclick="closeOverlay('ssOverlay')">✕</button>
+    <div class="modal-title2" style="margin-bottom:1rem">Payment Screenshot</div>
+    <img id="ssImg" src="" style="width:100%;border-radius:10px;border:1px solid var(--border)">
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '/api';
+let token = null, orgName = '';
+let currentRejectId = null;
+let allRegs = [];
+
+// ── LOGIN ─────────────────────────────────────────────────
+async function doLogin() {
+  const email = document.getElementById('lgEmail').value.trim();
+  const pw    = document.getElementById('lgPw').value;
+  const err   = document.getElementById('lgErr');
+  err.style.display = 'none';
+  if (!email || !pw) { err.textContent = 'Enter email and password'; err.style.display = 'block'; return; }
+  try {
+    const res = await apicall('/auth/organizer/login', 'POST', { email, password: pw });
+    token = res.token; orgName = res.name;
+    localStorage.setItem('org_token', token);
+    localStorage.setItem('org_name',  orgName);
+    localStorage.setItem('org_college', orgName);
+    localStorage.setItem('hf_token',  token);
+    localStorage.setItem('hf_role',   'organizer');
+    localStorage.setItem('hf_name',   orgName);
+    if (res.city) localStorage.setItem('org_city', res.city);
+    if (res.email) localStorage.setItem('org_email', res.email);
+    if (res.upi_id) localStorage.setItem('org_upi', res.upi_id);
+    showDashboard();
+  } catch(e) {
+    err.textContent = e.message || 'Login failed'; err.style.display = 'block';
+  }
+}
+
+function showDashboard() {
+  document.getElementById('loginGate').style.display = 'none';
+  document.getElementById('dashboardWrap').style.display = '';
+  document.getElementById('sideProfile').style.display = 'flex';
+  document.getElementById('avName').textContent = orgName;
+  document.getElementById('avInitials').textContent = orgName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  prefillEventForm();
+  loadAll();
+  loadRegistrations();
+  if (location.hash === '#post') switchTab('post');
+  else if (location.hash === '#registrations') switchTab('registrations');
+}
+
+function prefillEventForm() {
+  const college = localStorage.getItem('org_college') || orgName;
+  const city    = localStorage.getItem('org_city') || '';
+  const upi     = localStorage.getItem('org_upi') || '';
+  const email   = localStorage.getItem('org_email') || '';
+  if (college && !v('f_college')) document.getElementById('f_college').value = college;
+  if (city && !v('f_city')) {
+    const sel = document.getElementById('f_city');
+    const opt = Array.from(sel.options).find(o => o.value === city || o.text === city);
+    if (opt) sel.value = opt.value;
+    else if (city) { const o = document.createElement('option'); o.value = city; o.text = city; sel.appendChild(o); sel.value = city; }
+  }
+  if (upi && !v('f_upi')) document.getElementById('f_upi').value = upi;
+  if (email && !v('f_cemail')) document.getElementById('f_cemail').value = email;
+}
+
+function doLogout() {
+  token = null; orgName = '';
+  localStorage.removeItem('hf_token');
+  localStorage.removeItem('hf_role');
+  localStorage.removeItem('hf_name');
+  localStorage.removeItem('org_token');
+  localStorage.removeItem('org_name');
+  window.location = '../index.html';
+}
+
+
+// ── AUTO-LOGIN from localStorage ──────────────────────────
+window.onload = () => {
+  // Try org_token first, then fall back to hf_token if role is organizer
+  const t = localStorage.getItem('org_token') ||
+            (localStorage.getItem('hf_role') === 'organizer' ? localStorage.getItem('hf_token') : null);
+  const n = localStorage.getItem('org_name') || localStorage.getItem('hf_name') || 'Organizer';
+  if (t) { token = t; orgName = n; showDashboard(); }
+  if (location.hash === '#post' && t) switchTab('post');
+};
+
+// ── TABS ─────────────────────────────────────────────────
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const ids = ['overview','events','registrations','post'];
+    t.classList.toggle('active', ids[i] === id);
+  });
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  const titles = { overview:'Dashboard', events:'My Events', registrations:'Registrations', post:'Post New Event', account:'My Account' };
+  document.getElementById('topbarTitle').textContent = titles[id] || '';
+  document.querySelectorAll('.nav-item[data-tab]').forEach(n => {
+    n.classList.toggle('active', n.dataset.tab === id);
+  });
+  if (id === 'registrations') loadRegistrations();
+  if (id === 'events') loadEvents();
+  if (id === 'overview') loadOverviewEvents();
+  if (id === 'account') loadAccountInfo();
+}
+
+function goToAccount() {
+  switchTab('account');
+}
+
+function loadAccountInfo() {
+  document.getElementById('accCollege').textContent = localStorage.getItem('org_college') || orgName || '–';
+  document.getElementById('accEmail').textContent   = localStorage.getItem('org_email') || '–';
+  document.getElementById('accCity').textContent    = localStorage.getItem('org_city') || '–';
+  document.getElementById('accUpi').textContent     = localStorage.getItem('org_upi') || '–';
+}
+
+// ── LOAD ALL DATA ─────────────────────────────────────────
+async function loadAll() {
+  await Promise.all([loadAnalytics(), loadOverviewEvents(), loadEventFilter()]);
+}
+
+async function loadAnalytics() {
+  try {
+    const d = await apicall('/events/my/analytics', 'GET', null, token);
+    document.getElementById('m-events').textContent    = d.total_events;
+    document.getElementById('m-regs').textContent      = d.total_registrations;
+    document.getElementById('m-confirmed').textContent = d.confirmed_registrations;
+    document.getElementById('m-views').textContent     = d.total_views;
+    const pending = d.pending_registrations || 0;
+    if (pending > 0)
+      document.getElementById('m-pending-sub').textContent = `${pending} awaiting your approval`;
+    document.getElementById('pendingBadge').textContent = pending || '';
+    document.getElementById('pendingBadge').style.display = pending ? '' : 'none';
+    if (pending > 0 && !location.hash) {
+      switchTab('registrations');
+    }
+  } catch(e) { console.warn('Analytics error', e); }
+}
+
+async function loadOverviewEvents() {
+  try {
+    const evts = await apicall('/events/my/events', 'GET', null, token);
+    const tbody = document.getElementById('overviewEventsBody');
+    if (!evts.length) { tbody.innerHTML = '<tr><td colspan="6" style="color:var(--muted);text-align:center;padding:2rem">No events yet. Post your first event!</td></tr>'; return; }
+    tbody.innerHTML = evts.map(e => `
+      <tr>
+        <td><strong>${e.name}</strong></td>
+        <td>${e.start_date}</td>
+        <td>${e.reg_count} / ${e.max_registrations || '∞'} <span style="color:var(--accent);font-size:0.72rem">(${e.pending_count||0} pending)</span></td>
+        <td>${e.registration_fee ? '₹'+e.registration_fee : 'Free'}</td>
+        <td><span class="pill ${e.status==='live'?'p-live':e.status==='upcoming'?'p-upcoming':'p-draft'}">${e.status}</span></td>
+        <td><button class="act" onclick="switchTab('registrations');document.getElementById('filterEvent').value='${e.id}';loadRegistrations()">View Registrations</button></td>
+      </tr>`).join('');
+  } catch(e) { console.warn(e); }
+}
+
+async function loadEvents() {
+  try {
+    const evts = await apicall('/events/my/events', 'GET', null, token);
+    const tbody = document.getElementById('eventsBody');
+    if (!evts.length) { tbody.innerHTML = '<tr><td colspan="7" style="color:var(--muted);text-align:center;padding:2rem">No events posted yet.</td></tr>'; return; }
+    tbody.innerHTML = evts.map(e => `
+      <tr>
+        <td><strong>${e.name}</strong></td>
+        <td>${e.type}</td>
+        <td>${e.start_date}</td>
+        <td>${e.city}</td>
+        <td>${e.confirmed_count||0} / ${e.reg_count}</td>
+        <td>${e.registration_fee ? '₹'+e.registration_fee : 'Free'}</td>
+        <td><span class="pill ${e.status==='live'?'p-live':e.status==='upcoming'?'p-upcoming':'p-draft'}">${e.status}</span></td>
+      </tr>`).join('');
+  } catch(e) { console.warn(e); }
+}
+
+async function loadEventFilter() {
+  try {
+    const evts = await apicall('/events/my/events', 'GET', null, token);
+    const sel = document.getElementById('filterEvent');
+    sel.innerHTML = '<option value="">All Events</option>' + evts.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
+  } catch(e) {}
+}
+
+async function loadRegistrations() {
+  const eventId = document.getElementById('filterEvent').value;
+  const status  = document.getElementById('filterStatus').value;
+  let url = '/registrations/organizer/all?';
+  if (eventId) url += `event_id=${eventId}&`;
+  if (status)  url += `status=${status}`;
+
+  const tbody = document.getElementById('regsBody');
+  tbody.innerHTML = '<tr><td colspan="9" style="color:var(--muted);text-align:center;padding:1.5rem">Loading…</td></tr>';
+
+  try {
+    const regs = await apicall(url, 'GET', null, token);
+    allRegs = regs;
+    document.getElementById('regCountLabel').textContent = `${regs.length} registration${regs.length!==1?'s':''}`;
+
+    const statusLabels = {
+      confirmed: ['p-confirmed','✅ Confirmed'],
+      free_confirmed: ['p-confirmed','✅ Free'],
+      payment_submitted: ['p-submitted','⏳ Awaiting'],
+      pending_payment: ['p-pending','💳 Unpaid'],
+      rejected: ['p-rejected','❌ Rejected']
+    };
+
+    if (!regs.length) {
+      tbody.innerHTML = '<tr><td colspan="9" style="color:var(--muted);text-align:center;padding:2rem">No registrations yet for your events.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = regs.map(r => {
+      const [cls, lbl] = statusLabels[r.payment_status] || ['p-pending', r.payment_status];
+      const phone = r.display_phone || r.reg_phone || '–';
+      const year  = r.reg_year || '–';
+      const college = r.display_college || r.student_college || '–';
+      return `
+      <tr>
+        <td><strong>${esc(r.first_name)} ${esc(r.last_name)}</strong><br><span style="font-size:0.75rem;color:var(--muted)">${esc(r.student_email)}</span><br><span style="font-size:0.72rem;color:var(--accent3)">${esc(college)}</span></td>
+        <td style="font-size:0.8rem">${esc(r.event_name)}</td>
+        <td style="font-size:0.8rem">${esc(phone)}</td>
+        <td style="font-size:0.8rem">${esc(year)}</td>
+        <td style="font-size:0.8rem">${esc(r.team_name || '–')}</td>
+        <td>${r.registration_fee ? '₹'+r.registration_fee : 'Free'}</td>
+        <td style="font-size:0.78rem;font-family:monospace;color:var(--accent2)">${esc(r.utr_number || '–')}</td>
+        <td><span class="pill ${cls}">${lbl}</span></td>
+        <td>
+          <div class="action-btns">
+            <button class="act" onclick="viewRegDetail('${r.id}')">View</button>
+            ${regActionButtons(r.id, r.payment_status)}
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="9" style="color:var(--muted);text-align:center;padding:2rem">Error: ${e.message}</td></tr>`;
+  }
+}
+
+function esc(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+}
+
+function canApproveReg(status) {
+  return ['pending_payment', 'payment_submitted', 'rejected'].includes(status);
+}
+
+function canRejectReg(status) {
+  return ['pending_payment', 'payment_submitted', 'confirmed', 'free_confirmed'].includes(status);
+}
+
+function regActionButtons(id, status, fromDetail = false) {
+  const approve = canApproveReg(status)
+    ? `<button class="act approve" onclick="approveReg('${id}')">Approve</button>` : '';
+  const reject = canRejectReg(status)
+    ? `<button class="act reject" onclick="openReject('${id}', ${fromDetail})">Reject</button>` : '';
+  return `${approve}${reject}`;
+}
+
+function viewRegDetail(id) {
+  const r = allRegs.find(x => x.id === id);
+  if (!r) return;
+  document.getElementById('detailTitle').textContent = `${r.first_name} ${r.last_name}`;
+  document.getElementById('detailSub').textContent = `${r.event_name} · ${r.payment_status.replace(/_/g,' ')}`;
+  const members = (r.team_members || '').split(',').map(m => m.trim()).filter(Boolean);
+  const ssBtn = r.payment_screenshot
+    ? `<button class="act" style="margin-top:.5rem" onclick="viewSS('${esc(r.payment_screenshot)}')">View Payment Screenshot</button>`
+    : '<span style="color:var(--muted);font-size:.8rem">No screenshot uploaded</span>';
+  document.getElementById('detailBody').innerHTML = `
+    <div class="detail-grid">
+      <div class="detail-item"><label>Email</label><span>${esc(r.student_email)}</span></div>
+      <div class="detail-item"><label>Phone</label><span>${esc(r.display_phone || r.reg_phone || '–')}</span></div>
+      <div class="detail-item"><label>College (form)</label><span>${esc(r.display_college || '–')}</span></div>
+      <div class="detail-item"><label>City (form)</label><span>${esc(r.display_city || r.reg_city || '–')}</span></div>
+      <div class="detail-item"><label>Year of Study</label><span>${esc(r.reg_year || '–')}</span></div>
+      <div class="detail-item"><label>Account College</label><span>${esc(r.student_college || '–')}</span></div>
+      <div class="detail-item"><label>Team Name</label><span>${esc(r.team_name || '–')}</span></div>
+      <div class="detail-item"><label>Registration Fee</label><span>${r.registration_fee ? '₹'+r.registration_fee : 'Free'}</span></div>
+      <div class="detail-item detail-full"><label>Skills</label><span>${esc(r.reg_skills || r.skills || '–')}</span></div>
+      <div class="detail-item detail-full"><label>Team Members</label>
+        <div class="members-list">${members.length ? members.map(m => '• '+esc(m)).join('<br>') : '–'}</div>
+      </div>
+      <div class="detail-item detail-full"><label>Message to Organizer</label><span>${esc(r.reg_note || '–')}</span></div>
+      <div class="detail-item"><label>UTR / Transaction ID</label><span style="font-family:monospace;color:var(--accent2)">${esc(r.utr_number || '–')}</span></div>
+      <div class="detail-item"><label>Payment Status</label><span>${esc(r.payment_status.replace(/_/g,' '))}</span></div>
+      <div class="detail-item detail-full"><label>Payment Proof</label>${ssBtn}</div>
+      ${r.rejection_reason ? `<div class="detail-item detail-full"><label>Rejection Reason</label><span style="color:var(--accent)">${esc(r.rejection_reason)}</span></div>` : ''}
+    </div>
+    <div class="action-btns" style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border)">
+      ${regActionButtons(r.id, r.payment_status, true)}
+    </div>`;
+  openOverlay('detailOverlay');
+}
+
+async function approveReg(id) {
+  try {
+    await apicall(`/registrations/${id}/approve`, 'POST', {}, token);
+    showToast('Registration approved ✅');
+    closeOverlay('detailOverlay');
+    await loadRegistrations();
+    loadAnalytics();
+  } catch(e) { showToast(e.message || 'Error', true); }
+}
+
+function openReject(id, fromDetail = false) {
+  currentRejectId = id;
+  document.getElementById('rejectReason').value = '';
+  if (fromDetail) closeOverlay('detailOverlay');
+  openOverlay('rejectOverlay');
+}
+
+function closeRejectModal() {
+  closeOverlay('rejectOverlay');
+}
+
+function closeAllOverlays() {
+  ['rejectOverlay', 'detailOverlay', 'ssOverlay'].forEach(closeOverlay);
+}
+
+async function confirmReject() {
+  const reason = document.getElementById('rejectReason').value.trim() || 'Payment not verified';
+  try {
+    await apicall(`/registrations/${currentRejectId}/reject`, 'POST', { reason }, token);
+    closeAllOverlays();
+    switchTab('registrations');
+    showToast('Registration rejected');
+    await loadRegistrations();
+    loadAnalytics();
+  } catch(e) { showToast(e.message || 'Error', true); }
+}
+
+function viewSS(filename) {
+  document.getElementById('ssImg').src = `/uploads/${filename}`;
+  openOverlay('ssOverlay');
+}
+
+// ── POST EVENT ────────────────────────────────────────────
+const tags = [];
+function addTag(e) {
+  if (e.key !== 'Enter') return;
+  const input = document.getElementById('tagInput');
+  const val = input.value.trim();
+  if (!val) return;
+  tags.push(val);
+  const pill = document.createElement('span');
+  pill.className = 'tag-pill';
+  pill.innerHTML = `${val} <button onclick="removeTag(this,'${val}')">×</button>`;
+  document.getElementById('tagWrap').insertBefore(pill, input);
+  input.value = '';
+}
+function removeTag(btn, val) {
+  tags.splice(tags.indexOf(val), 1);
+  btn.parentElement.remove();
+}
+
+async function submitEvent(status) {
+  const formErr = document.getElementById('formErr');
+  const formOk  = document.getElementById('formOk');
+  formErr.style.display = 'none';
+  formOk.style.display  = 'none';
+
+  if (!token) {
+    formErr.textContent = 'Please login as an organizer to post events.';
+    formErr.style.display = 'block';
+    return;
+  }
+  if (localStorage.getItem('hf_role') === 'student') {
+    formErr.textContent = 'Students cannot post events. Please logout and login as an organizer.';
+    formErr.style.display = 'block';
+    return;
+  }
+
+  const name    = v('f_name');
+  const type    = v('f_type');
+  const college = v('f_college');
+  const city    = v('f_city');
+  const start   = v('f_start');
+  if (!name || !type || !college || !city || !start) {
+    formErr.textContent = 'Please fill required fields: Event Name, Type, College, City, Start Date';
+    formErr.style.display = 'block'; return;
+  }
+
+  const btn = document.querySelector('.submit-btn');
+  btn.innerHTML = '<span class="spinner"></span>Posting…'; btn.disabled = true;
+
+  try {
+    const res = await apicall('/events/', 'POST', {
+      name, type, description: v('f_desc'),
+      college, city, venue: v('f_venue'), mode: v('f_mode'),
+      start_date: start, end_date: v('f_end'),
+      duration_hrs: parseInt(v('f_dur')) || 0,
+      registration_deadline: v('f_deadline'),
+      min_team_size: parseInt(v('f_mint')) || 1,
+      max_team_size: parseInt(v('f_maxt')) || 4,
+      max_registrations: parseInt(v('f_maxr')) || 200,
+      registration_fee: parseInt(v('f_fee')) || 0,
+      upi_id: v('f_upi'),
+      prize_pool: v('f_prize'), prize_1st: v('f_p1'),
+      prize_2nd: v('f_p2'), prize_3rd: v('f_p3'),
+      tracks: tags,
+      contact_email: v('f_cemail'), contact_phone: v('f_cphone'),
+      website_url: v('f_web'), devfolio_url: v('f_devfolio'),
+      status
+    }, token);
+
+    formOk.textContent = status === 'live'
+      ? `🎉 Event published successfully! ID: ${res.id}`
+      : `📝 Saved as draft. ID: ${res.id}`;
+    formOk.style.display = 'block';
+    showToast(status === 'live' ? 'Event is now live!' : 'Saved as draft');
+    if (status === 'live') {
+      tags.length = 0;
+      document.querySelectorAll('#tagWrap .tag-pill').forEach(p => p.remove());
+      ['f_name','f_desc','f_venue','f_start','f_end','f_dur','f_deadline','f_prize','f_p1','f_p2','f_p3','f_cemail','f_cphone','f_web','f_devfolio','f_upi'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      document.getElementById('f_fee').value = '0';
+      document.getElementById('f_mint').value = '2';
+      document.getElementById('f_maxt').value = '4';
+    }
+    loadAll();
+    if (status === 'live') switchTab('events');
+  } catch(e) {
+    formErr.textContent = e.message || 'Failed to post event';
+    formErr.style.display = 'block';
+  } finally {
+    btn.innerHTML = '🚀 Publish Event'; btn.disabled = false;
+  }
+}
+
+// ── UTILS ─────────────────────────────────────────────────
+async function apicall(path, method = 'GET', body = null, tk = null) {
+  const opts = { method, headers: { 'Content-Type': 'application/json' } };
+  if (tk) opts.headers['Authorization'] = 'Bearer ' + tk;
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(API + path, opts);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+  return data;
+}
+function v(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function openOverlay(id)  { document.getElementById(id).classList.add('open'); }
+function closeOverlay(id) { document.getElementById(id).classList.remove('open'); }
+let toastTimer;
+function showToast(msg, isErr = false) {
+  const t = document.getElementById('toast');
+  t.textContent = (isErr ? '⚠️ ' : '✅ ') + msg;
+  t.className = 'toast show' + (isErr ? ' err' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 4000);
+}
+</script>
+</body>
+</html>
+

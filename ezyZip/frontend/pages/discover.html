@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discover Events — HackConnect</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#050810;--bg2:#0b0f1a;--bg3:#111827;--accent:#FF4D6D;--accent2:#00F5A0;--accent3:#7B61FF;--text:#F0F4FF;--muted:#8892A4;--border:rgba(255,255,255,0.07);--card:rgba(255,255,255,0.04)}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.1rem 2.5rem;background:rgba(5,8,16,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.25rem;color:var(--text);text-decoration:none}
+.logo span{color:var(--accent)}
+.nav-r{display:flex;gap:.75rem;align-items:center}
+.btn{padding:.5rem 1.1rem;border-radius:8px;font-size:.845rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s;border:none;text-decoration:none;display:inline-block}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.btn-ghost:hover{color:var(--text);background:var(--card)}
+.btn-accent{background:var(--accent);color:#fff}
+.btn-accent:hover{background:#ff2d50}
+.user-pill{display:flex;align-items:center;gap:.5rem;background:var(--card);border:1px solid var(--border);border-radius:100px;padding:.35rem .9rem .35rem .5rem;cursor:pointer;text-decoration:none;color:inherit;transition:all .15s}
+.user-pill:hover{border-color:rgba(123,97,255,.35);background:rgba(123,97,255,.06)}
+.user-dot{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--accent3),var(--accent));display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#fff;flex-shrink:0}
+.user-name-nav{font-size:.82rem;font-weight:500;color:var(--text)}
+
+.layout{display:grid;grid-template-columns:265px 1fr;min-height:calc(100vh - 62px)}
+
+/* SIDEBAR */
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:1.5rem 1.25rem;position:sticky;top:62px;height:calc(100vh - 62px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.search-wrap{position:relative;margin-bottom:1.5rem}
+.search-wrap input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:9px;padding:.6rem .9rem .6rem 2.3rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.875rem;outline:none;transition:border-color .2s}
+.search-wrap input:focus{border-color:rgba(255,255,255,.2)}
+.search-wrap input::placeholder{color:var(--muted);opacity:.7}
+.search-icon{position:absolute;left:.7rem;top:50%;transform:translateY(-50%);opacity:.4;pointer-events:none}
+.flabel{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:block;margin:1.5rem 0 .5rem}
+.flabel:first-of-type{margin-top:0}
+.chip-list{display:flex;flex-direction:column;gap:.15rem}
+.chip{padding:.42rem .7rem;border-radius:8px;cursor:pointer;font-size:.855rem;color:var(--muted);transition:all .15s;display:flex;justify-content:space-between;align-items:center}
+.chip:hover{background:rgba(255,255,255,.04);color:var(--text)}
+.chip.active{background:rgba(255,77,109,.1);color:var(--accent)}
+.cnt{font-size:.7rem;background:rgba(255,255,255,.06);padding:.1rem .45rem;border-radius:100px}
+.chip.active .cnt{background:rgba(255,77,109,.15)}
+
+/* MAIN */
+.main{padding:2rem 2.5rem}
+.topbar-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.75rem}
+.result-text{font-size:.875rem;color:var(--muted)}
+.result-text strong{color:var(--text)}
+.sort-sel{background:var(--card);border:1px solid var(--border);color:var(--text);padding:.48rem .9rem;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.845rem;outline:none;cursor:pointer}
+.active-tags{display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:1.25rem;min-height:24px}
+.atag{display:flex;align-items:center;gap:.35rem;background:rgba(123,97,255,.12);border:1px solid rgba(123,97,255,.25);color:#a78fff;padding:.25rem .7rem;border-radius:100px;font-size:.75rem}
+.atag button{background:none;border:none;color:#a78fff;cursor:pointer;font-size:.9rem;line-height:1;padding:0}
+.events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(275px,1fr));gap:1.2rem}
+.ev-card{background:var(--bg3);border:1px solid var(--border);border-radius:15px;overflow:hidden;cursor:pointer;transition:all .3s}
+.ev-card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.14);box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.ev-banner{height:100px;display:flex;align-items:flex-end;padding:.75rem}
+.ev-type{background:rgba(0,0,0,.55);backdrop-filter:blur(8px);color:#fff;font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.22rem .6rem;border-radius:100px;border:1px solid rgba(255,255,255,.14)}
+.ev-body{padding:1rem 1.1rem}
+.ev-name{font-family:'Syne',sans-serif;font-weight:700;font-size:.97rem;margin-bottom:.25rem;line-height:1.3}
+.ev-clg{font-size:.77rem;color:var(--accent3);font-weight:500;margin-bottom:.45rem}
+.ev-meta{font-size:.77rem;color:var(--muted);margin-bottom:.18rem;display:flex;align-items:center;gap:.35rem}
+.ev-foot{display:flex;align-items:center;justify-content:space-between;margin-top:.8rem;padding-top:.8rem;border-top:1px solid var(--border)}
+.prize{font-size:.77rem;font-weight:700;color:var(--accent2)}
+.fee-pill{font-size:.7rem;padding:.18rem .55rem;border-radius:100px;font-weight:700}
+.free{background:rgba(0,245,160,.1);color:var(--accent2);border:1px solid rgba(0,245,160,.2)}
+.paid{background:rgba(255,77,109,.1);color:var(--accent);border:1px solid rgba(255,77,109,.2)}
+.rbtn{background:var(--accent);color:#fff;border:none;padding:.38rem .88rem;border-radius:7px;font-size:.77rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.rbtn:hover{background:#ff2d50}
+.g1{background:linear-gradient(135deg,#1a0533,#3d0068)}
+.g2{background:linear-gradient(135deg,#001a3d,#004080)}
+.g3{background:linear-gradient(135deg,#1a0a00,#5c2800)}
+.g4{background:linear-gradient(135deg,#001a10,#005c38)}
+.g5{background:linear-gradient(135deg,#200020,#680068)}
+.g6{background:linear-gradient(135deg,#002020,#006040)}
+.empty{color:var(--muted);padding:3rem;text-align:center;grid-column:1/-1;font-size:.9rem;line-height:1.8}
+
+/* PAYMENT MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:1000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .3s}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:20px;width:92%;max-width:470px;padding:2.25rem;position:relative;transform:translateY(20px);transition:all .3s}
+.overlay.open .modal{transform:none}
+.mc{position:absolute;top:1rem;right:1rem;background:var(--card);border:1px solid var(--border);color:var(--text);width:28px;height:28px;border-radius:7px;font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.mttl{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;margin-bottom:.25rem}
+.msub{color:var(--muted);font-size:.855rem;margin-bottom:1.5rem}
+.psteps{display:flex;background:rgba(255,255,255,.03);border-radius:9px;overflow:hidden;margin-bottom:1.5rem}
+.pst{flex:1;padding:.5rem;text-align:center;font-size:.72rem;color:var(--muted);font-weight:500;border-bottom:2px solid transparent;transition:all .2s}
+.pst.done{color:var(--accent2);border-color:var(--accent2)}
+.pst.active{color:var(--accent3);border-color:var(--accent3)}
+.qr-c{text-align:center;margin:1rem 0}
+.qr-box{display:inline-block;background:#fff;border-radius:11px;padding:10px;margin-bottom:.6rem}
+.upi-id{font-family:monospace;font-size:.92rem;font-weight:700;color:var(--accent2);background:rgba(0,245,160,.08);border:1px solid rgba(0,245,160,.2);border-radius:8px;padding:.42rem .9rem;display:inline-block}
+.pay-amt{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;margin:.35rem 0}
+.hint{background:rgba(255,255,255,.03);border-radius:9px;padding:.85rem;font-size:.79rem;color:var(--muted);line-height:1.65;margin:.9rem 0}
+.fgroup{margin-bottom:1rem}
+.flbl{display:block;font-size:.75rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:.35rem}
+.finput{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:9px;padding:.65rem .9rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.875rem;outline:none;transition:border-color .2s}
+.finput:focus{border-color:rgba(255,255,255,.22)}
+.finput::placeholder{color:var(--muted);opacity:.6}
+.fselect{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:9px;padding:.65rem .9rem;font-family:'DM Sans',sans-serif;font-size:.875rem;outline:none}
+.fselect,select.finput{background-color:#111827!important;color:#F0F4FF!important}
+.fselect option,select.finput option{background-color:#111827;color:#F0F4FF}
+.fselect option:checked,select.finput option:checked{background-color:#1e2a45;color:#F0F4FF}
+.sort-sel option{background-color:#111827;color:#F0F4FF}
+.upzone{border:1px dashed var(--border);border-radius:9px;padding:1rem;text-align:center;cursor:pointer;transition:all .2s;font-size:.81rem;color:var(--muted)}
+.upzone:hover{border-color:rgba(123,97,255,.4);color:var(--accent3)}
+.upzone.has{border-color:rgba(0,245,160,.4);color:var(--accent2)}
+.upzone input{display:none}
+.errbox{background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.25);color:var(--accent);border-radius:8px;padding:.55rem .85rem;font-size:.81rem;margin-bottom:.9rem;display:none}
+.errbox.show{display:block}
+.mbtn{width:100%;padding:.78rem;border-radius:10px;font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;cursor:pointer;border:none;color:#fff;transition:all .2s;margin-top:.35rem}
+.mbtn.purple{background:var(--accent3)}
+.mbtn.purple:hover{background:#6a50ff}
+.mbtn.red{background:var(--accent)}
+.mbtn.red:hover{background:#ff2d50}
+.mbtn:disabled{background:rgba(255,255,255,.08)!important;color:var(--muted);cursor:not-allowed}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid rgba(0,245,160,.3);border-radius:11px;padding:.85rem 1.1rem;display:flex;align-items:center;gap:.6rem;font-size:.855rem;z-index:9999;transform:translateY(70px);opacity:0;transition:all .3s;max-width:320px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.err{border-color:rgba(255,77,109,.3)}
+.spin{width:15px;height:15px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;display:inline-block;vertical-align:middle;margin-right:4px}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.sidebar{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border)}.main{padding:1.25rem}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo">Hack<span>Fest</span></a>
+  <div class="nav-r" id="navBtns">
+    <a href="../index.html?login=student" class="btn btn-ghost">Student Login</a>
+    <a href="../index.html?login=organizer&mode=signup" class="btn btn-accent">+ Post Event</a>
+  </div>
+</nav>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="search-wrap">
+      <span class="search-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+      <input type="text" id="searchIn" placeholder="Search events, colleges…" oninput="applyFilters()">
+    </div>
+
+    <span class="flabel">Event Type</span>
+    <div class="chip-list">
+      <div class="chip active" data-filter="type" data-val="" onclick="setChip(this,'type')">🔥 All Types<span class="cnt" id="cntAll">0</span></div>
+      <div class="chip" data-filter="type" data-val="Hackathon" onclick="setChip(this,'type')">💻 Hackathon</div>
+      <div class="chip" data-filter="type" data-val="Coding Contest" onclick="setChip(this,'type')">⚡ Coding Contest</div>
+      <div class="chip" data-filter="type" data-val="AI/ML" onclick="setChip(this,'type')">🤖 AI/ML Sprint</div>
+      <div class="chip" data-filter="type" data-val="Design Sprint" onclick="setChip(this,'type')">🎨 Design Sprint</div>
+      <div class="chip" data-filter="type" data-val="Open Source" onclick="setChip(this,'type')">🌐 Open Source</div>
+    </div>
+
+    <span class="flabel">City</span>
+    <div class="chip-list">
+      <div class="chip active" data-filter="city" data-val="" onclick="setChip(this,'city')">All Cities</div>
+      <div class="chip" data-filter="city" data-val="Pune" onclick="setChip(this,'city')">Pune</div>
+      <div class="chip" data-filter="city" data-val="Mumbai" onclick="setChip(this,'city')">Mumbai</div>
+      <div class="chip" data-filter="city" data-val="Bangalore" onclick="setChip(this,'city')">Bangalore</div>
+      <div class="chip" data-filter="city" data-val="Hyderabad" onclick="setChip(this,'city')">Hyderabad</div>
+      <div class="chip" data-filter="city" data-val="Chennai" onclick="setChip(this,'city')">Chennai</div>
+      <div class="chip" data-filter="city" data-val="Delhi" onclick="setChip(this,'city')">Delhi</div>
+      <div class="chip" data-filter="city" data-val="Kolkata" onclick="setChip(this,'city')">Kolkata</div>
+    </div>
+
+    <span class="flabel">Registration</span>
+    <div class="chip-list">
+      <div class="chip active" data-filter="fee" data-val="" onclick="setChip(this,'fee')">Any</div>
+      <div class="chip" data-filter="fee" data-val="free" onclick="setChip(this,'fee')">Free Only</div>
+      <div class="chip" data-filter="fee" data-val="paid" onclick="setChip(this,'fee')">Paid Events</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar-row">
+      <div class="result-text">Showing <strong id="rcnt">0</strong> events</div>
+      <select class="sort-sel" id="sortSel" onchange="applyFilters()">
+        <option value="latest">Latest First</option>
+        <option value="prize">By Prize Pool</option>
+        <option value="regs">Most Registered</option>
+        <option value="free">Free First</option>
+      </select>
+    </div>
+    <div class="active-tags" id="activeTags"></div>
+    <div class="events-grid" id="grid"><div class="empty">Loading events…</div></div>
+  </div>
+</div>
+
+<!-- REGISTRATION MODAL (4 Steps) -->
+<div class="overlay" id="payOvl" onclick="if(event.target.id==='payOvl')document.getElementById('payOvl').classList.remove('open')">
+  <div class="modal" style="max-width:500px;max-height:90vh;overflow-y:auto">
+    <button class="mc" onclick="document.getElementById('payOvl').classList.remove('open')">✕</button>
+
+    <!-- Event banner -->
+    <div id="regEventBanner" style="background:linear-gradient(135deg,#1a0533,#3d0068);border-radius:10px;padding:1rem 1.1rem;margin-bottom:1.1rem;display:flex;align-items:center;gap:.75rem">
+      <div style="flex:1">
+        <div style="font-family:Syne,sans-serif;font-weight:800;font-size:.95rem;margin-bottom:.15rem" id="regEventName">Event</div>
+        <div style="font-size:.75rem;color:rgba(255,255,255,.55)" id="regEventMeta">College · City</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-size:.65rem;color:rgba(255,255,255,.45)">Fee</div>
+        <div style="font-family:Syne,sans-serif;font-weight:800;font-size:1rem" id="regEventFee">Free</div>
+      </div>
+    </div>
+
+    <!-- Steps -->
+    <div class="psteps" style="margin-bottom:1.25rem">
+      <div class="pst active" id="st1">1 · Details</div>
+      <div class="pst" id="st2">2 · Team</div>
+      <div class="pst" id="st3">3 · Payment</div>
+      <div class="pst" id="st4">4 · Done</div>
+    </div>
+
+    <!-- Step 1: Personal Details -->
+    <div id="s1">
+      <div class="errbox" id="regErr1"></div>
+      <div class="fgroup"><label class="flbl">Full Name</label><input class="finput" id="regFullName" placeholder="Your name" readonly style="opacity:.7"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+        <div class="fgroup"><label class="flbl">College *</label><input class="finput" id="regCollege" placeholder="MIT College"></div>
+        <div class="fgroup"><label class="flbl">City *</label><input class="finput" id="regCity" placeholder="Pune"></div>
+      </div>
+      <div class="fgroup"><label class="flbl">Phone *</label><input class="finput" id="regPhone" type="tel" placeholder="+91 98765 43210"></div>
+      <div class="fgroup"><label class="flbl">Year of Study *</label>
+        <select class="fselect" id="regYear" style="cursor:pointer">
+          <option value="">Select year…</option>
+          <option>1st Year</option><option>2nd Year</option>
+          <option>3rd Year</option><option>4th Year</option><option>Postgraduate</option>
+        </select>
+      </div>
+      <div class="fgroup"><label class="flbl">Your Skills</label><input class="finput" id="regSkills" placeholder="Python, React, ML…"></div>
+      <button class="mbtn purple" onclick="regNext(1)">Continue to Team Info →</button>
+    </div>
+
+    <!-- Step 2: Team -->
+    <div id="s2" style="display:none">
+      <div class="errbox" id="regErr2"></div>
+      <div style="font-size:.75rem;color:var(--muted);margin-bottom:.75rem" id="teamSizeHint">Teams of 2–4</div>
+      <div class="fgroup"><label class="flbl">Team Name *</label><input class="finput" id="regTeamName" placeholder="e.g. ByteBlasters"></div>
+      <div style="font-size:.72rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem">Other Team Members</div>
+      <div id="memberList"></div>
+      <button type="button" onclick="addMemberField()" style="background:transparent;border:1px dashed var(--border);color:var(--muted);width:100%;padding:.5rem;border-radius:8px;cursor:pointer;font-size:.8rem;margin-bottom:.75rem">+ Add Member</button>
+      <div class="fgroup"><label class="flbl">Message for organizer (optional)</label>
+        <textarea class="finput" id="regNote" placeholder="Any special requirements…" style="resize:vertical;min-height:60px;line-height:1.6"></textarea>
+      </div>
+      <div style="display:flex;gap:.65rem">
+        <button class="mbtn" style="background:rgba(255,255,255,.06);color:var(--muted);width:75px;flex-shrink:0" onclick="gostep(1)">← Back</button>
+        <button class="mbtn purple" onclick="regNext(2)" style="flex:1">Review & Pay →</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Payment -->
+    <div id="s3" style="display:none">
+      <!-- Summary -->
+      <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:.9rem 1rem;margin-bottom:1.1rem;font-size:.82rem">
+        <div style="font-weight:600;margin-bottom:.5rem">Registration Summary</div>
+        <div style="display:flex;justify-content:space-between;padding:.25rem 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Event</span><span id="sumEvent">—</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.25rem 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Name</span><span id="sumName">—</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.25rem 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Team</span><span id="sumTeam">—</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.25rem 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">College</span><span id="sumCollege">—</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.35rem 0;font-weight:700"><span>Amount</span><span id="sumAmount" style="color:var(--accent2)">—</span></div>
+      </div>
+      <!-- Free -->
+      <div id="freeBox" style="display:none;text-align:center;padding:.75rem 0">
+        <div style="font-size:2rem;margin-bottom:.4rem">🎉</div>
+        <div style="font-weight:600;margin-bottom:.3rem">This event is FREE!</div>
+        <div style="font-size:.8rem;color:var(--muted);margin-bottom:1rem">No payment needed. Confirm your spot below.</div>
+        <button class="mbtn purple" id="freeBtn" onclick="submitFreeReg()">Confirm Registration</button>
+      </div>
+      <!-- Paid -->
+      <div id="paidBox">
+        <div class="qr-c">
+          <div class="qr-box" id="qrBox"></div>
+          <div style="font-size:.75rem;color:var(--muted)">Pay exactly</div>
+          <div class="pay-amt" id="pmAmt">₹0</div>
+          <div class="upi-id" id="pmUpi">loading…</div>
+        </div>
+        <div class="hint">📱 GPay / PhonePe / Paytm / BHIM<br>→ Scan QR or enter UPI ID<br>→ Pay exact amount → Copy <strong style="color:var(--text)">UTR / Transaction ID</strong></div>
+        <div class="fgroup"><label class="flbl">UTR / Transaction ID *</label><input class="finput" id="utrIn" placeholder="e.g. UTR123456789012"></div>
+        <div class="fgroup">
+          <label class="flbl">Screenshot (optional)</label>
+          <div class="upzone" id="upz" onclick="document.getElementById('ssf').click()">
+            <input type="file" id="ssf" accept="image/*" onchange="onss(event)">📷 Upload screenshot
+          </div>
+        </div>
+        <div class="errbox" id="perr"></div>
+        <div style="display:flex;gap:.65rem">
+          <button class="mbtn" style="background:rgba(255,255,255,.06);color:var(--muted);width:75px;flex-shrink:0" onclick="gostep(2)">← Back</button>
+          <button class="mbtn purple" id="subUTR" onclick="submitPay()" style="flex:1">Submit Payment Details</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Done -->
+    <div id="s4" style="display:none;text-align:center;padding:1.25rem 0">
+      <div style="font-size:3rem;margin-bottom:.6rem" id="doneIcon">🎉</div>
+      <div class="mttl" id="doneTitle">Done!</div>
+      <p style="color:var(--muted);font-size:.855rem;line-height:1.65;margin:.9rem 0 1.25rem" id="doneMsg">—</p>
+      <button class="mbtn red" onclick="document.getElementById('payOvl').classList.remove('open');window.location='student.html'">View My Dashboard →</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '/api';
+const banners = ['g1','g2','g3','g4','g5','g6'];
+let allEvts = [], filters = { type:'', city:'', fee:'' };
+let ss = '', regId = '';
+let tok  = localStorage.getItem('hf_token');
+let role = localStorage.getItem('hf_role');
+const userName = localStorage.getItem('hf_name');
+
+function updateNavUI() {
+  const nb = document.getElementById('navBtns');
+  if (tok && userName) {
+    const dest = role === 'student' ? 'student.html' : 'organizer.html';
+    const initials = userName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const postBtn = role === 'organizer'
+      ? '<a href="organizer.html#post" class="btn btn-accent">+ Post Event</a>'
+      : '';
+    nb.innerHTML = `
+      <a href="${dest}" class="user-pill" title="Go to your dashboard">
+        <div class="user-dot">${initials}</div>
+        <span class="user-name-nav">${userName}</span>
+      </a>
+      ${postBtn}
+      <button type="button" class="btn btn-ghost" onclick="doLogout()">Logout</button>`;
+  } else {
+    nb.innerHTML = `
+      <a href="../index.html?login=student" class="btn btn-ghost">Student Login</a>
+      <a href="../index.html?login=organizer&mode=signup" class="btn btn-accent">+ Post Event</a>`;
+  }
+}
+function doLogout() {
+  localStorage.removeItem('hf_token');
+  localStorage.removeItem('hf_role');
+  localStorage.removeItem('hf_name');
+  localStorage.removeItem('org_token');
+  localStorage.removeItem('org_name');
+  tok = null; role = null;
+  updateNavUI();
+  toast('Logged out');
+}
+updateNavUI();
+
+// Read city from URL
+const urlCity = new URLSearchParams(location.search).get('city');
+if (urlCity) {
+  filters.city = urlCity;
+  document.querySelectorAll('[data-filter="city"]').forEach(c => {
+    c.classList.toggle('active', c.dataset.val === urlCity);
+  });
+}
+
+async function init() {
+  try {
+    // Use fast bootstrap call first, then filter client-side
+    const data = await apicall('/bootstrap');
+    allEvts = data.events || [];
+    // Apply URL city filter immediately
+    if (filters.city) applyFilters();
+    else renderEvts(allEvts);
+    document.getElementById('cntAll').textContent = allEvts.length;
+  } catch(e) {
+    // fallback
+    try {
+      const params = new URLSearchParams();
+      if (filters.city) params.set('city', filters.city);
+      allEvts = await apicall('/events/?'+params);
+      renderEvts(allEvts);
+    } catch(e2) {
+      document.getElementById('grid').innerHTML = '<div class="empty">Could not load events. Is the backend running?<br><code style="color:var(--accent2)">python app.py</code></div>';
+    }
+  }
+}
+init();
+
+function setChip(el, filterKey) {
+  document.querySelectorAll(`[data-filter="${filterKey}"]`).forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  filters[filterKey] = el.dataset.val;
+  applyFilters();
+}
+
+function applyFilters() {
+  const search = document.getElementById('searchIn').value.toLowerCase().trim();
+  const sort   = document.getElementById('sortSel').value;
+  let evts = allEvts.filter(e => {
+    const matchType = !filters.type || e.type === filters.type;
+    const matchCity = !filters.city || e.city.toLowerCase().includes(filters.city.toLowerCase());
+    const matchFee  = !filters.fee || (filters.fee==='free'?(!e.registration_fee||e.registration_fee===0):(e.registration_fee>0));
+    const matchSrch = !search || e.name.toLowerCase().includes(search) || e.college.toLowerCase().includes(search) || e.city.toLowerCase().includes(search);
+    return matchType && matchCity && matchFee && matchSrch;
+  });
+  if (sort==='regs') evts.sort((a,b)=>(b.reg_count||0)-(a.reg_count||0));
+  if (sort==='free') evts.sort((a,b)=>(a.registration_fee||0)-(b.registration_fee||0));
+  if (sort==='prize') evts.sort((a,b)=>(b.prize_pool||'').localeCompare(a.prize_pool||''));
+  renderEvts(evts);
+  updateTags();
+}
+
+function updateTags() {
+  const tags = [];
+  if (filters.type) tags.push(filters.type);
+  if (filters.city) tags.push(filters.city);
+  if (filters.fee==='free') tags.push('Free only');
+  if (filters.fee==='paid') tags.push('Paid events');
+  const search = document.getElementById('searchIn').value.trim();
+  if (search) tags.push(`"${search}"`);
+  document.getElementById('activeTags').innerHTML = tags.map(t =>
+    `<span class="atag">${t} <button onclick="clearTag('${t}')">×</button></span>`
+  ).join('');
+}
+
+function clearTag(tag) {
+  if (tag === 'Free only') { filters.fee = ''; document.querySelectorAll('[data-filter="fee"]').forEach((c,i)=>c.classList.toggle('active',i===0)); }
+  else if (tag === 'Paid events') { filters.fee = ''; document.querySelectorAll('[data-filter="fee"]').forEach((c,i)=>c.classList.toggle('active',i===0)); }
+  else if (allEvts.some(e=>e.type===tag)) { filters.type = ''; document.querySelectorAll('[data-filter="type"]').forEach((c,i)=>c.classList.toggle('active',i===0)); }
+  else if (allEvts.some(e=>e.city===tag)) { filters.city = ''; document.querySelectorAll('[data-filter="city"]').forEach((c,i)=>c.classList.toggle('active',i===0)); }
+  else { document.getElementById('searchIn').value = ''; }
+  applyFilters();
+}
+
+function renderEvts(evts) {
+  document.getElementById('rcnt').textContent = evts.length;
+  if (!evts.length) { document.getElementById('grid').innerHTML='<div class="empty">No events match your filters.</div>'; return; }
+  document.getElementById('grid').innerHTML = evts.map((e,i)=>{
+    const free = !e.registration_fee||e.registration_fee===0;
+    return `<div class="ev-card">
+      <div class="ev-banner ${banners[i%6]}"><span class="ev-type">${e.type}</span></div>
+      <div class="ev-body">
+        <div class="ev-name">${e.name}</div>
+        <div class="ev-clg">${e.college}</div>
+        <div class="ev-meta">📍 ${e.city}</div>
+        <div class="ev-meta">📅 ${e.start_date}${e.end_date&&e.end_date!==e.start_date?' – '+e.end_date:''}</div>
+        <div class="ev-meta">👥 Teams ${e.min_team_size}–${e.max_team_size} · ${e.reg_count||0} registered</div>
+        <div class="ev-foot">
+          <span class="prize">${e.prize_pool||'—'}</span>
+          <div style="display:flex;align-items:center;gap:.45rem">
+            <span class="fee-pill ${free?'free':'paid'}">${free?'FREE':'₹'+e.registration_fee}</span>
+            <button class="rbtn" onclick="event.stopPropagation();doReg('${e.id}')">Register</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+let curEvt = null;
+async function doReg(eventId) {
+  if (!tok) { toast('Please login as a student first','err'); window.location='../index.html?login=student'; return; }
+  if (role !== 'student') { toast('Only students can register for events','err'); return; }
+
+  curEvt = allEvts.find(e => e.id === eventId);
+  if (!curEvt) return;
+
+  // Pre-fill and open modal at step 1
+  document.getElementById('regFullName').value = localStorage.getItem('hf_name') || '';
+  document.getElementById('regCollege').value  = localStorage.getItem('hf_college') || '';
+  document.getElementById('regCity').value     = localStorage.getItem('hf_city') || '';
+  document.getElementById('teamSizeHint').textContent = `Teams of ${curEvt.min_team_size}–${curEvt.max_team_size} members`;
+  document.getElementById('regEventName').textContent = curEvt.name;
+  document.getElementById('regEventMeta').textContent = `${curEvt.college} · ${curEvt.city}`;
+  const fee = curEvt.registration_fee || 0;
+  document.getElementById('regEventFee').textContent = fee === 0 ? 'FREE' : '₹' + fee;
+  document.getElementById('memberList').innerHTML = '';
+  addMemberField();
+  regId = null; ss = '';
+  gostep(1);
+  document.getElementById('payOvl').classList.add('open');
+}
+
+function addMemberField() {
+  const list = document.getElementById('memberList');
+  const idx  = list.children.length + 1;
+  const div  = document.createElement('div');
+  div.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem';
+  div.innerHTML = `
+    <input class="finput" placeholder="Member ${idx} name" style="font-size:.82rem">
+    <input class="finput" placeholder="Member ${idx} email" type="email" style="font-size:.82rem">`;
+  list.appendChild(div);
+}
+
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  if (el) { el.textContent = msg; el.classList.add('show'); }
+}
+
+function regNext(step) {
+  if (step === 1) {
+    if (!document.getElementById('regCollege').value.trim()) return showErr('regErr1','Enter your college name');
+    if (!document.getElementById('regCity').value.trim())    return showErr('regErr1','Enter your city');
+    if (!document.getElementById('regPhone').value.trim())   return showErr('regErr1','Enter your phone number');
+    if (!document.getElementById('regYear').value)           return showErr('regErr1','Select your year of study');
+    localStorage.setItem('hf_college', document.getElementById('regCollege').value.trim());
+    localStorage.setItem('hf_city',    document.getElementById('regCity').value.trim());
+    document.getElementById('regErr1').classList.remove('show');
+    gostep(2);
+  } else if (step === 2) {
+    if (!document.getElementById('regTeamName').value.trim()) return showErr('regErr2','Enter a team name');
+    document.getElementById('regErr2').classList.remove('show');
+    const fee = curEvt.registration_fee || 0;
+    document.getElementById('sumEvent').textContent   = curEvt.name;
+    document.getElementById('sumName').textContent    = document.getElementById('regFullName').value;
+    document.getElementById('sumTeam').textContent    = document.getElementById('regTeamName').value.trim();
+    document.getElementById('sumCollege').textContent = document.getElementById('regCollege').value.trim();
+    document.getElementById('sumAmount').textContent  = fee === 0 ? 'FREE' : '₹' + fee;
+    document.getElementById('pmAmt').textContent      = '₹' + fee;
+    if (fee === 0) {
+      document.getElementById('freeBox').style.display = '';
+      document.getElementById('paidBox').style.display = 'none';
+    } else {
+      document.getElementById('freeBox').style.display = 'none';
+      document.getElementById('paidBox').style.display = '';
+      loadQR();
+    }
+    gostep(3);
+  }
+}
+
+async function loadQR() {
+  try {
+    const qr = await apicall('/registrations/qr/' + curEvt.id);
+    document.getElementById('qrBox').innerHTML    = qr.qr_svg || '';
+    document.getElementById('pmUpi').textContent  = qr.upi_id || 'hackconnect@upi';
+  } catch(e) {}
+}
+
+async function collectAndReg() {
+  const members = [];
+  document.getElementById('memberList').querySelectorAll('div').forEach(row => {
+    const ins = row.querySelectorAll('input');
+    const n = ins[0]?.value.trim(), e = ins[1]?.value.trim();
+    if (n) members.push(n + (e ? ' <'+e+'>' : ''));
+  });
+  try {
+    const r = await apicall('/registrations/register', 'POST', {
+      event_id:     curEvt.id,
+      team_name:    document.getElementById('regTeamName').value.trim(),
+      team_members: members,
+      college:      document.getElementById('regCollege').value.trim(),
+      city:         document.getElementById('regCity').value.trim(),
+      phone:        document.getElementById('regPhone').value.trim(),
+      year:         document.getElementById('regYear').value,
+      skills:       document.getElementById('regSkills').value.trim(),
+      note:         document.getElementById('regNote').value.trim()
+    }, tok);
+    regId = r.registration_id;
+    return r;
+  } catch (e) {
+    if (e.status === 409 && e.data?.registration_id) {
+      regId = e.data.registration_id;
+      if (e.data.payment_status === 'free_confirmed' || e.data.payment_status === 'confirmed') {
+        throw new Error('You are already registered for this event');
+      }
+      return e.data;
+    }
+    throw e;
+  }
+}
+
+async function submitFreeReg() {
+  const btn = document.getElementById('freeBtn');
+  btn.innerHTML = '<span class="spin"></span>Confirming…'; btn.disabled = true;
+  try {
+    await collectAndReg();
+    gostep(4);
+    document.getElementById('doneIcon').textContent  = '🎉';
+    document.getElementById('doneTitle').textContent = 'Registration Confirmed!';
+    document.getElementById('doneMsg').innerHTML     = `You're in for <strong>${curEvt.name}</strong>. Free event — spot confirmed!`;
+    toast('Registered! ✅');
+  } catch(e) { btn.innerHTML = 'Confirm Registration'; btn.disabled = false; toast(e.message||'Error','err'); }
+}
+function gostep(n) {
+  [1,2,3,4].forEach(i=>{
+    const el=document.getElementById('s'+i);
+    if(el) el.style.display=i===n?'':'none';
+    const st=document.getElementById('st'+i);
+    if(st){ st.classList.remove('active','done'); if(i<n) st.classList.add('done'); if(i===n) st.classList.add('active'); }
+  });
+  if(n===1){ regId=null; ss=''; }
+}
+function onss(evt) {
+  const f=evt.target.files[0]; if(!f) return;
+  document.getElementById('upz').innerHTML='✅ '+f.name;
+  document.getElementById('upz').classList.add('has');
+  const rd=new FileReader(); rd.onload=e=>ss=e.target.result; rd.readAsDataURL(f);
+}
+async function submitPay() {
+  const utr=document.getElementById('utrIn').value.trim();
+  const err=document.getElementById('perr');
+  err.classList.remove('show');
+  if(!utr){err.textContent='Enter UTR / Transaction ID';err.classList.add('show');return;}
+  const b=document.getElementById('subUTR');
+  b.innerHTML='<span class="spin"></span>Submitting…';b.disabled=true;
+  try {
+    if(!regId) await collectAndReg();
+    await apicall('/registrations/'+regId+'/payment','POST',{utr_number:utr,screenshot_base64:ss||''},tok);
+    gostep(4);
+    document.getElementById('doneIcon').textContent='⏳';
+    document.getElementById('doneTitle').textContent='Payment Submitted!';
+    document.getElementById('doneMsg').innerHTML='UTR <strong>'+utr+'</strong> sent to organizer. They will verify and confirm your registration.';
+    toast('Payment submitted! Awaiting organizer approval 🕐');
+  } catch(e){err.textContent=e.message||'Failed';err.classList.add('show');b.textContent='Submit Payment Details';b.disabled=false;}
+}
+
+async function apicall(path,method='GET',body=null,token=null){
+  const opts={method,headers:{'Content-Type':'application/json'}};
+  if(token)opts.headers['Authorization']='Bearer '+token;
+  if(body)opts.body=JSON.stringify(body);
+  const r=await fetch(API+path,opts);
+  const d=await r.json();
+  if(!r.ok){const err=new Error(d.error||'HTTP '+r.status);err.status=r.status;err.data=d;throw err;}
+  return d;
+}
+let _tt;
+function toast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=(type==='err'?'⚠️ ':'✅ ')+msg;
+  t.className='toast show'+(type==='err'?' err':'');
+  clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),4000);
+}
+</script>
+</body>
+</html>
+

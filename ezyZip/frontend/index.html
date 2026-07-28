@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HackConnect — College Tech Events India</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#050810;--bg2:#0b0f1a;--bg3:#111827;
+  --accent:#FF4D6D;--accent2:#00F5A0;--accent3:#7B61FF;
+  --text:#F0F4FF;--muted:#8892A4;
+  --border:rgba(255,255,255,0.07);--card:rgba(255,255,255,0.04);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.35}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 4rem;background:rgba(5,8,16,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;letter-spacing:-0.03em;color:var(--text);text-decoration:none}
+.logo span{color:var(--accent)}
+.nav-links{display:flex;gap:2.5rem;align-items:center}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:0.9rem;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.nav-btns{display:flex;gap:.75rem;align-items:center}
+.btn{padding:.55rem 1.2rem;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.875rem;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;border:none}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-ghost:hover{background:var(--card);border-color:rgba(255,255,255,.2)}
+.btn-accent{background:var(--accent);color:#fff}
+.btn-accent:hover{background:#ff2d50;transform:translateY(-1px)}
+.btn-purple{background:var(--accent3);color:#fff}
+.btn-purple:hover{background:#6a50ff;transform:translateY(-1px)}
+
+/* user pill in nav */
+.user-pill{display:flex;align-items:center;gap:.5rem;background:var(--card);border:1px solid var(--border);border-radius:100px;padding:.35rem .9rem .35rem .5rem;cursor:pointer}
+.user-dot{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--accent3),var(--accent));display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#fff;flex-shrink:0}
+.user-name-nav{font-size:.82rem;font-weight:500}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8rem 2rem 4rem;position:relative;z-index:1}
+.hero-glow{position:absolute;top:20%;left:50%;transform:translateX(-50%);width:700px;height:500px;background:radial-gradient(ellipse,rgba(123,97,255,.15) 0%,rgba(255,77,109,.08) 40%,transparent 70%);pointer-events:none}
+.badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(123,97,255,.12);border:1px solid rgba(123,97,255,.3);color:#a78fff;padding:.4rem 1rem;border-radius:100px;font-size:.8rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;margin-bottom:2rem;animation:fadeUp .6s ease both}
+.badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#a78fff;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.8rem,7vw,5.5rem);line-height:1.05;letter-spacing:-.04em;margin-bottom:1.5rem;animation:fadeUp .7s ease .1s both}
+h1 em{font-style:normal;color:var(--accent)}
+.hero-sub{font-size:1.15rem;color:var(--muted);max-width:560px;line-height:1.7;margin-bottom:3rem;animation:fadeUp .7s ease .2s both;font-weight:300}
+.hero-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;animation:fadeUp .7s ease .3s both}
+.btn-lg{padding:.85rem 2rem;border-radius:10px;font-size:1rem}
+.stats-bar{display:flex;justify-content:center;gap:0;margin:4rem auto 0;max-width:680px;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--card);animation:fadeUp .7s ease .45s both}
+.stat{flex:1;padding:1.5rem;text-align:center;border-right:1px solid var(--border)}
+.stat:last-child{border-right:none}
+.stat-num{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800}
+.stat-lbl{font-size:.78rem;color:var(--muted);margin-top:.2rem;letter-spacing:.04em;text-transform:uppercase}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SECTIONS ── */
+section{padding:6rem 4rem;position:relative;z-index:1}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:0 4rem}
+.sec-label{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:.75rem}
+.sec-title{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:1rem}
+.sec-sub{color:var(--muted);font-size:1.05rem;max-width:520px;line-height:1.7}
+
+/* ── HOW IT WORKS ── */
+.how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;margin-top:3rem}
+.how-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;position:relative;overflow:hidden;transition:all .3s}
+.how-card:hover{border-color:rgba(255,255,255,.15);transform:translateY(-4px)}
+.how-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent3));opacity:0;transition:opacity .3s}
+.how-card:hover::before{opacity:1}
+.how-num{font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;color:rgba(255,255,255,.06);line-height:1;margin-bottom:1rem}
+.how-icon{font-size:1.8rem;margin-bottom:1rem}
+.how-title{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:.5rem}
+.how-desc{color:var(--muted);font-size:.9rem;line-height:1.6}
+
+/* ── EVENTS ── */
+.events-section{background:var(--bg2)}
+.filter-bar{display:flex;gap:.75rem;flex-wrap:wrap;margin:2rem 0 2.5rem}
+.filter-chip{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:.45rem 1.1rem;border-radius:100px;font-size:.85rem;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+.filter-chip:hover,.filter-chip.active{background:rgba(255,77,109,.12);border-color:rgba(255,77,109,.4);color:var(--accent)}
+.events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem}
+.ev-card{background:var(--bg3);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all .3s;cursor:pointer}
+.ev-card:hover{border-color:rgba(255,255,255,.15);transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.ev-banner{height:130px;display:flex;align-items:flex-end;padding:.9rem;position:relative}
+.ev-type{background:rgba(0,0,0,.55);backdrop-filter:blur(8px);color:#fff;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.28rem .65rem;border-radius:100px;border:1px solid rgba(255,255,255,.15)}
+.ev-body{padding:1.1rem 1.25rem}
+.ev-name{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:.3rem;line-height:1.3}
+.ev-college{font-size:.78rem;color:var(--accent3);font-weight:500;margin-bottom:.5rem}
+.ev-meta{display:flex;align-items:center;gap:.4rem;font-size:.79rem;color:var(--muted);margin-bottom:.2rem}
+.ev-footer{display:flex;align-items:center;justify-content:space-between;margin-top:.85rem;padding-top:.85rem;border-top:1px solid var(--border)}
+.prize-badge{color:var(--accent2);font-size:.78rem;font-weight:700}
+.fee-tag{font-size:.72rem;padding:.2rem .6rem;border-radius:100px;font-weight:700}
+.free-tag{background:rgba(0,245,160,.1);color:var(--accent2);border:1px solid rgba(0,245,160,.2)}
+.paid-tag{background:rgba(255,77,109,.1);color:var(--accent);border:1px solid rgba(255,77,109,.2)}
+.reg-btn{background:var(--accent);color:#fff;border:none;padding:.42rem .95rem;border-radius:7px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.reg-btn:hover{background:#ff2d50;transform:scale(1.04)}
+.g1{background:linear-gradient(135deg,#1a0533,#3d0068)}
+.g2{background:linear-gradient(135deg,#001a3d,#004080)}
+.g3{background:linear-gradient(135deg,#1a0a00,#5c2800)}
+.g4{background:linear-gradient(135deg,#001a10,#005c38)}
+.g5{background:linear-gradient(135deg,#200020,#680068)}
+.g6{background:linear-gradient(135deg,#002020,#006040)}
+
+/* ── CITIES ── */
+.cities-scroll{display:flex;gap:1rem;overflow-x:auto;padding-bottom:.75rem;margin-top:2.5rem;scrollbar-width:none}
+.cities-scroll::-webkit-scrollbar{display:none}
+.city-card{flex-shrink:0;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.5rem;cursor:pointer;transition:all .2s;text-align:center;min-width:120px}
+.city-card:hover{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.06)}
+.city-name{font-family:'Syne',sans-serif;font-size:.92rem;font-weight:700}
+.city-count{font-size:.75rem;color:var(--muted);margin-top:.2rem}
+
+/* ── ROLES ── */
+.roles-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:3rem}
+.role-card{border-radius:20px;padding:2.5rem;position:relative;overflow:hidden;transition:transform .3s}
+.role-card:hover{transform:translateY(-4px)}
+.role-student{background:linear-gradient(135deg,rgba(123,97,255,.1),rgba(123,97,255,.03));border:1px solid rgba(123,97,255,.2)}
+.role-org{background:linear-gradient(135deg,rgba(255,77,109,.1),rgba(255,77,109,.03));border:1px solid rgba(255,77,109,.2)}
+.role-icon{font-size:2.5rem;margin-bottom:1.5rem}
+.role-title{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:.75rem}
+.role-desc{color:var(--muted);line-height:1.7;margin-bottom:1.5rem;font-size:.95rem}
+.role-features{list-style:none;margin-bottom:2rem}
+.role-features li{display:flex;align-items:center;gap:.6rem;color:var(--muted);font-size:.9rem;padding:.3rem 0}
+.role-features li::before{content:'→';color:var(--accent2);font-weight:700}
+
+/* ── FOOTER ── */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:3rem 4rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;z-index:1;position:relative}
+.footer-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem}
+.footer-logo span{color:var(--accent)}
+.footer-links{display:flex;gap:2rem}
+.footer-links a{color:var(--muted);text-decoration:none;font-size:.85rem;transition:color .2s}
+.footer-links a:hover{color:var(--text)}
+
+/* ── MODALS ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:1000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .3s}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:20px;width:92%;max-width:450px;padding:2.25rem;position:relative;transform:translateY(22px) scale(.97);transition:all .3s}
+.overlay.open .modal{transform:none}
+.modal-close{position:absolute;top:1.1rem;right:1.1rem;background:var(--card);border:1px solid var(--border);color:var(--text);width:30px;height:30px;border-radius:7px;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.modal-close:hover{background:rgba(255,255,255,.1)}
+.modal-tabs{display:flex;gap:.4rem;background:rgba(255,255,255,.03);border-radius:9px;padding:4px;margin-bottom:1.5rem}
+.m-tab{flex:1;background:transparent;border:none;color:var(--muted);padding:.55rem;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:.84rem;font-weight:500;cursor:pointer;transition:all .2s}
+.m-tab.active{background:var(--card);color:var(--text);border:1px solid var(--border)}
+.modal-title{font-family:'Syne',sans-serif;font-size:1.35rem;font-weight:800;margin-bottom:.3rem}
+.modal-sub{color:var(--muted);font-size:.875rem;margin-bottom:1.75rem}
+.fgroup{margin-bottom:1.1rem}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.flabel{display:block;font-size:.77rem;font-weight:600;letter-spacing:.04em;color:var(--muted);margin-bottom:.38rem;text-transform:uppercase}
+.finput,.fselect{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:9px;padding:.68rem .9rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.875rem;outline:none;transition:border-color .2s}
+.finput:focus,.fselect:focus{border-color:rgba(255,255,255,.22)}
+.finput::placeholder{color:var(--muted);opacity:.6}
+.modal-btn{width:100%;padding:.8rem;border-radius:10px;font-family:'Syne',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:all .2s;margin-top:.4rem;border:none;color:#fff}
+.modal-btn.red{background:var(--accent)}
+.modal-btn.red:hover{background:#ff2d50}
+.modal-btn.purple{background:var(--accent3)}
+.modal-btn.purple:hover{background:#6a50ff}
+.modal-btn:disabled{background:rgba(255,255,255,.08)!important;color:var(--muted);cursor:not-allowed}
+.switch-link{text-align:center;margin-top:.85rem;font-size:.82rem;color:var(--muted)}
+.switch-link a{color:var(--accent);cursor:pointer}
+.err-box{background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.25);color:var(--accent);border-radius:8px;padding:.6rem .9rem;font-size:.82rem;margin-bottom:1rem;display:none}
+.err-box.show{display:block}
+.ok-box{background:rgba(0,245,160,.1);border:1px solid rgba(0,245,160,.25);color:var(--accent2);border-radius:8px;padding:.6rem .9rem;font-size:.82rem;margin-bottom:1rem;display:none}
+.ok-box.show{display:block}
+
+/* ── PAYMENT MODAL ── */
+.pay-steps{display:flex;margin-bottom:1.5rem;background:rgba(255,255,255,.03);border-radius:9px;overflow:hidden}
+.pstep{flex:1;padding:.55rem;text-align:center;font-size:.73rem;color:var(--muted);font-weight:500;border-bottom:2px solid transparent;transition:all .2s}
+.pstep.done{color:var(--accent2);border-color:var(--accent2)}
+.pstep.active{color:var(--accent3);border-color:var(--accent3)}
+.qr-wrap{text-align:center;margin:1rem 0}
+.qr-box{display:inline-block;background:#fff;border-radius:12px;padding:10px;margin-bottom:.65rem}
+.upi-chip{font-family:monospace;font-size:.95rem;font-weight:700;color:var(--accent2);background:rgba(0,245,160,.08);border:1px solid rgba(0,245,160,.2);border-radius:8px;padding:.45rem 1rem;display:inline-block}
+.pay-amount{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;margin:.4rem 0}
+.pay-hint{background:rgba(255,255,255,.03);border-radius:10px;padding:.9rem 1rem;font-size:.8rem;color:var(--muted);line-height:1.65;margin:.9rem 0}
+.upload-zone{border:1px dashed var(--border);border-radius:9px;padding:1.1rem;text-align:center;cursor:pointer;transition:all .2s;font-size:.82rem;color:var(--muted)}
+.upload-zone:hover{border-color:rgba(123,97,255,.4);color:var(--accent3)}
+.upload-zone.has-file{border-color:rgba(0,245,160,.4);color:var(--accent2)}
+.upload-zone input{display:none}
+.fselect{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:9px;padding:.68rem .9rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.875rem;outline:none;transition:border-color .2s}
+.fselect:focus{border-color:rgba(255,255,255,.22)}
+.fselect,select.finput{background-color:#111827!important;color:#F0F4FF!important}
+.fselect option,select.finput option{background-color:#111827;color:#F0F4FF}
+.fselect option:checked,select.finput option:checked{background-color:#1e2a45;color:#F0F4FF}
+.finput[readonly]{cursor:not-allowed}
+textarea.finput{resize:vertical;min-height:70px;line-height:1.6}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:1.75rem;right:1.75rem;background:var(--bg3);border:1px solid rgba(0,245,160,.3);border-radius:12px;padding:.9rem 1.25rem;display:flex;align-items:center;gap:.7rem;font-size:.875rem;z-index:9999;transform:translateY(80px);opacity:0;transition:all .35s;max-width:340px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.err{border-color:rgba(255,77,109,.3)}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle;margin-right:5px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:768px){
+  nav{padding:1rem 1.5rem}
+  .nav-links{display:none}
+  section{padding:4rem 1.5rem}
+  .divider{margin:0 1.5rem}
+  footer{padding:2rem 1.5rem;flex-direction:column;text-align:center}
+  .stats-bar{flex-direction:column}
+  .stat{border-right:none;border-bottom:1px solid var(--border)}
+  .stat:last-child{border-bottom:none}
+  .roles-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="logo">Hack<span>Fest</span></a>
+  <div class="nav-links">
+    <a href="#events">Events</a>
+    <a href="#cities">Cities</a>
+    <a href="pages/discover.html">Discover</a>
+    <a href="#how">How it works</a>
+  </div>
+  <div class="nav-btns" id="navBtns"></div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="badge">🇮🇳 India's #1 College Tech Platform</div>
+  <h1>Find your next<br><em>Hackathon</em> &<br>Tech Event</h1>
+  <p class="hero-sub">Discover hackathons, coding contests, and tech events at colleges across every city in India. Filter by location, college, or category.</p>
+  <div class="hero-actions" id="heroActions">
+    <a href="pages/discover.html" class="btn btn-accent btn-lg">Explore Events →</a>
+    <button class="btn btn-ghost btn-lg" id="heroHostBtn" onclick="openPostEvent()">Host an Event</button>
+  </div>
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-num">2,400+</div><div class="stat-lbl">Events Posted</div></div>
+    <div class="stat"><div class="stat-num">340+</div><div class="stat-lbl">Colleges</div></div>
+    <div class="stat"><div class="stat-num">62</div><div class="stat-lbl">Cities</div></div>
+    <div class="stat"><div class="stat-num">98K+</div><div class="stat-lbl">Students</div></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="sec-label">How it works</div>
+  <div class="sec-title">Simple. Fast. Powerful.</div>
+  <div class="how-grid">
+    <div class="how-card"><div class="how-num">01</div><div class="how-icon">🔍</div><div class="how-title">Discover Events</div><div class="how-desc">Browse hackathons and tech events filtered by your city, college, or event type.</div></div>
+    <div class="how-card"><div class="how-num">02</div><div class="how-icon">🎓</div><div class="how-title">Student Login</div><div class="how-desc">Create your student profile with your college ID, skills, and interests.</div></div>
+    <div class="how-card"><div class="how-num">03</div><div class="how-icon">💳</div><div class="how-title">Pay via UPI</div><div class="how-desc">Scan the QR, pay on GPay / PhonePe, submit your UTR — done in seconds.</div></div>
+    <div class="how-card"><div class="how-num">04</div><div class="how-icon">🏆</div><div class="how-title">Compete & Win</div><div class="how-desc">Participate, build, and win prizes. Organizer confirms your seat after payment.</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- LIVE EVENTS -->
+<section id="events" class="events-section">
+  <div class="sec-label">Live Events</div>
+  <div class="sec-title">Happening Now & Soon</div>
+  <div class="filter-bar" id="filterBar">
+    <div class="filter-chip active" data-type="All" onclick="filterChip(this)">All</div>
+    <div class="filter-chip" data-type="Hackathon" onclick="filterChip(this)">Hackathon</div>
+    <div class="filter-chip" data-type="Coding Contest" onclick="filterChip(this)">Coding Contest</div>
+    <div class="filter-chip" data-type="AI/ML" onclick="filterChip(this)">AI/ML</div>
+    <div class="filter-chip" data-type="Design Sprint" onclick="filterChip(this)">Design Sprint</div>
+    <div class="filter-chip" data-type="Open Source" onclick="filterChip(this)">Open Source</div>
+  </div>
+  <div class="events-grid" id="eventsGrid">
+    <div style="color:var(--muted);padding:2rem;grid-column:1/-1">Loading events…</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CITIES -->
+<section id="cities">
+  <div class="sec-label">Browse by City</div>
+  <div class="sec-title">Events Near You</div>
+  <p class="sec-sub">Find hackathons and tech events in your city. We cover 62+ cities across India.</p>
+  <div class="cities-scroll">
+    <div class="city-card" onclick="goDiscover('Mumbai')"><div class="city-name">Mumbai</div><div class="city-count">48 events</div></div>
+    <div class="city-card" onclick="goDiscover('Pune')"><div class="city-name">Pune</div><div class="city-count">36 events</div></div>
+    <div class="city-card" onclick="goDiscover('Bangalore')"><div class="city-name">Bangalore</div><div class="city-count">72 events</div></div>
+    <div class="city-card" onclick="goDiscover('Hyderabad')"><div class="city-name">Hyderabad</div><div class="city-count">41 events</div></div>
+    <div class="city-card" onclick="goDiscover('Chennai')"><div class="city-name">Chennai</div><div class="city-count">39 events</div></div>
+    <div class="city-card" onclick="goDiscover('Delhi')"><div class="city-name">Delhi</div><div class="city-count">55 events</div></div>
+    <div class="city-card" onclick="goDiscover('Kolkata')"><div class="city-name">Kolkata</div><div class="city-count">24 events</div></div>
+    <div class="city-card" onclick="goDiscover('Jaipur')"><div class="city-name">Jaipur</div><div class="city-count">18 events</div></div>
+    <div class="city-card" onclick="goDiscover('Ahmedabad')"><div class="city-name">Ahmedabad</div><div class="city-count">22 events</div></div>
+    <div class="city-card" onclick="goDiscover('Nagpur')"><div class="city-name">Nagpur</div><div class="city-count">14 events</div></div>
+    <div class="city-card" onclick="goDiscover('Indore')"><div class="city-name">Indore</div><div class="city-count">16 events</div></div>
+    <div class="city-card" onclick="goDiscover('Kochi')"><div class="city-name">Kochi</div><div class="city-count">19 events</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ROLES -->
+<section>
+  <div class="sec-label">Who is it for?</div>
+  <div class="sec-title">Two portals, one platform</div>
+  <div class="roles-grid">
+    <div class="role-card role-student">
+      <div class="role-icon">🎓</div>
+      <div class="role-title">For Students</div>
+      <div class="role-desc">Discover, register, and compete at hackathons and tech events across India's top colleges.</div>
+      <ul class="role-features">
+        <li>Browse events by city & college</li>
+        <li>UPI QR payment in 30 seconds</li>
+        <li>Personal event dashboard</li>
+        <li>Achievement & certificate tracker</li>
+        <li>Connect with teammates</li>
+      </ul>
+      <button class="btn btn-purple btn-lg" onclick="openAuth('student','signup')">Create Student Account →</button>
+    </div>
+    <div class="role-card role-org">
+      <div class="role-icon">🏛️</div>
+      <div class="role-title">For Organizers</div>
+      <div class="role-desc">Post your college hackathon or tech event and reach thousands of students nationwide.</div>
+      <ul class="role-features">
+        <li>Create & publish events instantly</li>
+        <li>UPI payment collection built-in</li>
+        <li>Approve / reject registrations</li>
+        <li>Real-time analytics dashboard</li>
+        <li>Verified college badge</li>
+      </ul>
+      <button class="btn btn-accent btn-lg" onclick="openPostEvent()">Register Your College →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Hack<span>Fest</span></div>
+  <div class="footer-links"><a href="javascript:void(0)" onclick="openInfo('about')">About</a><a href="javascript:void(0)" onclick="openInfo('contact')">Contact</a><a href="javascript:void(0)" onclick="openInfo('privacy')">Privacy</a><a href="javascript:void(0)" onclick="openInfo('terms')">Terms</a></div>
+  <div style="color:var(--muted);font-size:.82rem">© 2025 HackConnect India</div>
+</footer>
+
+<!-- ═══════════════════════════════════════
+     AUTH MODAL
+═══════════════════════════════════════ -->
+<div class="overlay" id="authOverlay" onclick="bgClose(event,'authOverlay')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('authOverlay')">✕</button>
+    <div class="modal-tabs">
+      <button class="m-tab active" id="tabS" onclick="setAuthType('student')">🎓 Student</button>
+      <button class="m-tab" id="tabO" onclick="setAuthType('organizer')">🏛️ Organizer</button>
+    </div>
+    <div id="authBody"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     REGISTRATION MODAL (4 steps)
+═══════════════════════════════════════ -->
+<div class="overlay" id="payOverlay" onclick="bgClose(event,'payOverlay')">
+  <div class="modal" style="max-width:500px;max-height:90vh;overflow-y:auto">
+    <button class="modal-close" onclick="closeModal('payOverlay')">✕</button>
+
+    <!-- Event Info Header -->
+    <div id="regEventBanner" style="background:linear-gradient(135deg,#1a0533,#3d0068);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:.75rem">
+      <div style="flex:1">
+        <div style="font-family:Syne,sans-serif;font-weight:800;font-size:1rem;margin-bottom:.2rem" id="regEventName">Event Name</div>
+        <div style="font-size:.78rem;color:rgba(255,255,255,.6)" id="regEventMeta">College · City</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-size:.7rem;color:rgba(255,255,255,.5)">Fee</div>
+        <div style="font-family:Syne,sans-serif;font-weight:800;font-size:1.1rem" id="regEventFee">Free</div>
+      </div>
+    </div>
+
+    <!-- Step Indicators -->
+    <div class="pay-steps" style="margin-bottom:1.5rem">
+      <div class="pstep active" id="ps1">1 · Your Details</div>
+      <div class="pstep" id="ps2">2 · Team Info</div>
+      <div class="pstep" id="ps3">3 · Payment</div>
+      <div class="pstep" id="ps4">4 · Done</div>
+    </div>
+
+    <!-- STEP 1: Personal Details -->
+    <div id="pStep1">
+      <div style="font-family:Syne,sans-serif;font-size:1rem;font-weight:700;margin-bottom:1rem">Your Details</div>
+      <div class="err-box" id="regErr1"></div>
+      <div class="fgroup">
+        <label class="flabel">Full Name *</label>
+        <input class="finput" id="regFullName" placeholder="Aarav Shah" readonly style="background:rgba(255,255,255,.06);color:var(--muted)">
+      </div>
+      <div class="fgroup">
+        <label class="flabel">Email *</label>
+        <input class="finput" id="regEmail" placeholder="you@college.edu" readonly style="background:rgba(255,255,255,.06);color:var(--muted)">
+      </div>
+      <div class="frow">
+        <div class="fgroup">
+          <label class="flabel">College *</label>
+          <input class="finput" id="regCollege" placeholder="MIT College">
+        </div>
+        <div class="fgroup">
+          <label class="flabel">City *</label>
+          <input class="finput" id="regCity" placeholder="Pune">
+        </div>
+      </div>
+      <div class="fgroup">
+        <label class="flabel">Phone Number *</label>
+        <input class="finput" id="regPhone" type="tel" placeholder="+91 98765 43210">
+      </div>
+      <div class="fgroup">
+        <label class="flabel">Year of Study *</label>
+        <select class="fselect" id="regYear">
+          <option value="">Select year…</option>
+          <option>1st Year</option>
+          <option>2nd Year</option>
+          <option>3rd Year</option>
+          <option>4th Year</option>
+          <option>Postgraduate</option>
+        </select>
+      </div>
+      <div class="fgroup">
+        <label class="flabel">Your Skills (comma separated)</label>
+        <input class="finput" id="regSkills" placeholder="Python, React, Machine Learning">
+      </div>
+      <button class="modal-btn purple" onclick="regNext(1)">Continue to Team Info →</button>
+    </div>
+
+    <!-- STEP 2: Team Details -->
+    <div id="pStep2" style="display:none">
+      <div style="font-family:Syne,sans-serif;font-size:1rem;font-weight:700;margin-bottom:.25rem">Team Information</div>
+      <div style="font-size:.8rem;color:var(--muted);margin-bottom:1rem" id="teamSizeHint">Teams of 2–4 members</div>
+      <div class="err-box" id="regErr2"></div>
+      <div class="fgroup">
+        <label class="flabel">Team Name *</label>
+        <input class="finput" id="regTeamName" placeholder="e.g. ByteBlasters">
+      </div>
+      <div id="memberFields">
+        <div style="font-size:.77rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem">
+          Other Team Members (name + email)
+        </div>
+        <div id="memberList"></div>
+        <button type="button" onclick="addMemberField()" style="background:transparent;border:1px dashed var(--border);color:var(--muted);width:100%;padding:.55rem;border-radius:8px;cursor:pointer;font-size:.82rem;transition:all .2s;margin-top:.25rem" onmouseover="this.style.borderColor='rgba(123,97,255,.4)';this.style.color='#a78fff'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
+          + Add Team Member
+        </button>
+      </div>
+      <div class="fgroup" style="margin-top:1rem">
+        <label class="flabel">Any message for the organizer? (optional)</label>
+        <textarea class="finput" id="regNote" placeholder="Special requirements, dietary needs, etc." style="resize:vertical;min-height:70px;line-height:1.6"></textarea>
+      </div>
+      <div style="display:flex;gap:.75rem;margin-top:.5rem">
+        <button class="modal-btn" style="background:rgba(255,255,255,.06);color:var(--muted);flex:0 0 auto;width:80px" onclick="goStep(1)">← Back</button>
+        <button class="modal-btn purple" onclick="regNext(2)" style="flex:1">Continue to Payment →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Payment -->
+    <div id="pStep3" style="display:none">
+      <div style="font-family:Syne,sans-serif;font-size:1rem;font-weight:700;margin-bottom:1rem">Payment</div>
+
+      <!-- Registration summary -->
+      <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:1.25rem;font-size:.83rem">
+        <div style="font-weight:600;margin-bottom:.6rem;color:var(--text)">Registration Summary</div>
+        <div style="display:flex;justify-content:space-between;padding:.3rem 0;border-bottom:1px solid var(--border)">
+          <span style="color:var(--muted)">Event</span><span id="sumEvent" style="font-weight:500">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:.3rem 0;border-bottom:1px solid var(--border)">
+          <span style="color:var(--muted)">Name</span><span id="sumName">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:.3rem 0;border-bottom:1px solid var(--border)">
+          <span style="color:var(--muted)">Team</span><span id="sumTeam">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:.3rem 0;border-bottom:1px solid var(--border)">
+          <span style="color:var(--muted)">College</span><span id="sumCollege">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:.4rem 0;margin-top:.25rem">
+          <span style="font-weight:700">Amount to Pay</span>
+          <span id="sumAmount" style="font-family:Syne,sans-serif;font-weight:800;font-size:1.1rem;color:var(--accent2)">₹0</span>
+        </div>
+      </div>
+
+      <!-- Free event -->
+      <div id="freeEventBox" style="display:none;text-align:center;padding:1rem 0">
+        <div style="font-size:2rem;margin-bottom:.5rem">🎉</div>
+        <div style="font-weight:600;margin-bottom:.35rem">This event is FREE!</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-bottom:1.25rem">No payment needed. Click below to confirm your spot.</div>
+        <button class="modal-btn purple" id="freeConfirmBtn" onclick="submitFreeReg()">Confirm Registration</button>
+      </div>
+
+      <!-- Paid event -->
+      <div id="paidEventBox">
+        <div class="qr-wrap">
+          <div class="qr-box" id="qrBox"></div>
+          <div style="font-size:.77rem;color:var(--muted)">Scan & pay exactly</div>
+          <div class="pay-amount" id="payAmt">₹0</div>
+          <div class="upi-chip" id="payUpi">loading…</div>
+        </div>
+        <div class="pay-hint">📱 Open GPay / PhonePe / Paytm / BHIM<br>→ Scan QR or type UPI ID above<br>→ Pay the <strong style="color:var(--text)">exact amount</strong> shown<br>→ Copy the <strong style="color:var(--text)">UTR / Transaction ID</strong> from receipt</div>
+        <div class="fgroup">
+          <label class="flabel">UTR / Transaction ID *</label>
+          <input class="finput" id="utrInput" placeholder="e.g. UTR123456789012">
+        </div>
+        <div class="fgroup">
+          <label class="flabel">Payment Screenshot (optional but recommended)</label>
+          <div class="upload-zone" id="upZone" onclick="document.getElementById('ssFile').click()">
+            <input type="file" id="ssFile" accept="image/*" onchange="onFileSelect(event)">
+            📷 Tap to upload screenshot
+          </div>
+        </div>
+        <div class="err-box" id="payErr"></div>
+        <div style="display:flex;gap:.75rem">
+          <button class="modal-btn" style="background:rgba(255,255,255,.06);color:var(--muted);flex:0 0 auto;width:80px" onclick="goStep(2)">← Back</button>
+          <button class="modal-btn purple" id="submitUTR" onclick="submitPayment()" style="flex:1">Submit Payment Details</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: Done -->
+    <div id="pStep4" style="display:none;text-align:center;padding:1.5rem 0">
+      <div style="font-size:3.5rem;margin-bottom:.75rem" id="doneIcon">🎉</div>
+      <div class="modal-title" id="doneTitle">Registration Complete!</div>
+      <p style="color:var(--muted);font-size:.875rem;line-height:1.7;margin:1rem 0 1.5rem" id="doneMsg">—</p>
+      <button class="modal-btn red" onclick="closeModal('payOverlay');window.location='pages/student.html'">View My Dashboard →</button>
+    </div>
+  </div>
+</div>
+
+<!-- INFO MODAL -->
+<div class="overlay" id="infoOverlay" onclick="bgClose(event,'infoOverlay')">
+  <div class="modal" style="max-width:480px">
+    <button class="modal-close" onclick="closeModal('infoOverlay')">✕</button>
+    <div class="modal-title" id="infoTitle">About</div>
+    <p id="infoBody" style="color:var(--muted);font-size:.875rem;line-height:1.7;margin-top:.75rem"></p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '/api';
+let authType = 'student';
+let S = {
+  token: localStorage.getItem('hf_token'),
+  role:  localStorage.getItem('hf_role'),
+  name:  localStorage.getItem('hf_name'),
+  regId: null,
+  screenshot: ''
+};
+
+// ── INIT ────────────────────────────────────────────
+updateNavUI();
+loadEvents();
+(function handleUrlAuth() {
+  const p = new URLSearchParams(location.search);
+  const login = p.get('login');
+  const mode = p.get('mode') || 'login';
+  if (login === 'student' || login === 'organizer') {
+    openAuth(login, mode);
+    history.replaceState({}, '', location.pathname);
+  }
+})();
+
+function updateNavUI() {
+  const nb = document.getElementById('navBtns');
+  const hostBtn = document.getElementById('heroHostBtn');
+  if (S.token && S.name) {
+    const initials = S.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const dest = S.role === 'student' ? 'pages/student.html' : 'pages/organizer.html';
+    const postBtn = S.role === 'organizer'
+      ? `<button class="btn btn-accent" onclick="openPostEvent()">Post Event</button>`
+      : '';
+    nb.innerHTML = `
+      <div class="user-pill" onclick="window.location='${dest}'" title="Go to your dashboard">
+        <div class="user-dot">${initials}</div>
+        <span class="user-name-nav">${S.name}</span>
+      </div>
+      ${postBtn}
+      <button class="btn btn-ghost" onclick="doLogout()">Logout</button>`;
+    if (hostBtn) hostBtn.style.display = S.role === 'organizer' ? '' : 'none';
+  } else {
+    nb.innerHTML = `
+      <button class="btn btn-ghost" onclick="openAuth('student','login')">Login</button>
+      <button class="btn btn-ghost" style="border-color:rgba(123,97,255,.4);color:#a78fff" onclick="openAuth('student','signup')">Sign Up</button>
+      <button class="btn btn-accent" onclick="openPostEvent()">Post Event</button>`;
+    if (hostBtn) hostBtn.style.display = '';
+  }
+}
+
+function openPostEvent() {
+  if (S.token && S.role === 'student') {
+    showToast('Post Event is for organizers only. Students can browse and register for events.', 'err');
+    return;
+  }
+  if (S.token && S.role === 'organizer') {
+    window.location = 'pages/organizer.html#post';
+    return;
+  }
+  openAuth('organizer', 'signup');
+}
+
+function doLogout() {
+  localStorage.removeItem('hf_token');
+  localStorage.removeItem('hf_role');
+  localStorage.removeItem('hf_name');
+  localStorage.removeItem('org_token');
+  localStorage.removeItem('org_name');
+  window.location.reload();
+}
+
+// ── AUTH MODAL ──────────────────────────────────────
+let authMode = 'login';
+function openAuth(type, mode) {
+  authType = type; authMode = mode;
+  document.getElementById('tabS').classList.toggle('active', type==='student');
+  document.getElementById('tabO').classList.toggle('active', type==='organizer');
+  renderAuth();
+  openModal('authOverlay');
+}
+function setAuthType(t) {
+  authType = t; authMode = 'login';
+  document.getElementById('tabS').classList.toggle('active', t==='student');
+  document.getElementById('tabO').classList.toggle('active', t==='organizer');
+  renderAuth();
+}
+function renderAuth() {
+  const isS = authType === 'student';
+  const isL = authMode === 'login';
+  const errBox = '<div class="err-box" id="authErr"></div>';
+  let html = '';
+
+  if (isL) {
+    // ── LOGIN FORM ──────────────────────────────────────
+    html = `
+      <div class="modal-title">${isS ? 'Student Login' : 'Organizer Login'}</div>
+      <div class="modal-sub">${isS ? 'Access your hackathon dashboard' : 'Manage your events'}</div>
+      ${errBox}
+      <div class="fgroup">
+        <label class="flabel">Email</label>
+        <input class="finput" id="aEmail" type="email"
+          placeholder="${isS ? 'you@college.edu' : 'events@college.edu'}"
+          onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div class="fgroup">
+        <label class="flabel">Password</label>
+        <input class="finput" id="aPw" type="password" placeholder="••••••••"
+          onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <button class="modal-btn ${isS ? 'red' : 'purple'}" id="authSubmit" onclick="doLogin()">
+        Login
+      </button>
+      <div class="switch-link">
+        No account? <a onclick="authMode='signup';renderAuth()">Sign up free</a>
+      </div>
+      <div style="margin-top:.75rem;text-align:center;font-size:.75rem;color:var(--muted)">
+        Demo: <strong style="color:var(--text)">
+          ${isS ? 'aarav@mit.edu / student123' : 'organizer@mit.edu / organizer123'}
+        </strong>
+      </div>`;
+
+  } else if (isS) {
+    // ── STUDENT SIGNUP FORM ─────────────────────────────
+    html = `
+      <div class="modal-title">Join HackConnect</div>
+      <div class="modal-sub">Create your free student account</div>
+      ${errBox}
+      <div class="frow">
+        <div class="fgroup">
+          <label class="flabel">First Name</label>
+          <input class="finput" id="sfn" placeholder="Aarav">
+        </div>
+        <div class="fgroup">
+          <label class="flabel">Last Name</label>
+          <input class="finput" id="sln" placeholder="Shah">
+        </div>
+      </div>
+      <div class="fgroup">
+        <label class="flabel">College Email</label>
+        <input class="finput" id="aEmail" type="email" placeholder="you@college.edu">
+      </div>
+      <div class="frow">
+        <div class="fgroup">
+          <label class="flabel">College</label>
+          <input class="finput" id="scollege" placeholder="MIT College">
+        </div>
+        <div class="fgroup">
+          <label class="flabel">City</label>
+          <input class="finput" id="scity" placeholder="Pune">
+        </div>
+      </div>
+      <div class="fgroup">
+        <label class="flabel">Password</label>
+        <input class="finput" id="aPw" type="password" placeholder="Create a password">
+      </div>
+      <button class="modal-btn red" id="authSubmit" onclick="doSignup()">
+        Create Account
+      </button>
+      <div class="switch-link">
+        Already have one? <a onclick="authMode='login';renderAuth()">Login</a>
+      </div>`;
+
+  } else {
+    // ── ORGANIZER SIGNUP FORM ───────────────────────────
+    html = `
+      <div class="modal-title">Register College</div>
+      <div class="modal-sub">Start hosting events on HackConnect</div>
+      ${errBox}
+      <div class="fgroup">
+        <label class="flabel">College / Institution</label>
+        <input class="finput" id="ocollege" placeholder="MIT College of Engineering">
+      </div>
+      <div class="fgroup">
+        <label class="flabel">Official Email</label>
+        <input class="finput" id="aEmail" type="email" placeholder="events@college.edu">
+      </div>
+      <div class="frow">
+        <div class="fgroup">
+          <label class="flabel">City</label>
+          <input class="finput" id="ocity" placeholder="Pune">
+        </div>
+        <div class="fgroup">
+          <label class="flabel">State</label>
+          <input class="finput" id="ostate" placeholder="Maharashtra">
+        </div>
+      </div>
+      <div class="fgroup">
+        <label class="flabel">UPI ID (for collecting fees)</label>
+        <input class="finput" id="oupi" placeholder="college@upi">
+      </div>
+      <div class="fgroup">
+        <label class="flabel">Password</label>
+        <input class="finput" id="aPw" type="password" placeholder="Create a password">
+      </div>
+      <button class="modal-btn purple" id="authSubmit" onclick="doSignup()">
+        Register & Continue
+      </button>
+      <div class="switch-link">
+        Already registered? <a onclick="authMode='login';renderAuth()">Login</a>
+      </div>`;
+  }
+
+  document.getElementById('authBody').innerHTML = html;
+}
+
+async function doLogin() {
+  const email = v('aEmail'), pw = v('aPw');
+  if (!email) return authErr('Please enter your email');
+  if (!pw)    return authErr('Please enter your password');
+  setBtnLoading('authSubmit', 'Logging in…');
+  try {
+    const r = await api(`/auth/${authType}/login`, 'POST', {email, password: pw});
+    saveAuth(r, email);
+    closeModal('authOverlay');
+    updateNavUI();
+    showToast(`Welcome back, ${r.name}! 👋`);
+    setTimeout(() => {
+      window.location = authType === 'student'
+        ? 'pages/student.html'
+        : 'pages/organizer.html';
+    }, 600);
+  } catch(e) {
+    authErr(e.message === 'Invalid email or password'
+      ? 'Wrong email or password. Try again.'
+      : (e.message || 'Login failed'));
+    resetBtn('authSubmit', 'Login');
+  }
+}
+async function doSignup() {
+  const email = v('aEmail'), pw = v('aPw');
+
+  // Validate required fields per role
+  if (authType === 'student') {
+    if (!v('sfn'))       return authErr('Please enter your first name');
+    if (!v('sln'))       return authErr('Please enter your last name');
+    if (!email)          return authErr('Please enter your college email');
+    if (!v('scollege'))  return authErr('Please enter your college name');
+    if (!v('scity'))     return authErr('Please enter your city');
+    if (!pw)             return authErr('Please create a password');
+    if (pw.length < 6)   return authErr('Password must be at least 6 characters');
+  } else {
+    if (!v('ocollege'))  return authErr('Please enter your college name');
+    if (!email)          return authErr('Please enter your official email');
+    if (!v('ocity'))     return authErr('Please enter your city');
+    if (!v('ostate'))    return authErr('Please enter your state');
+    if (!pw)             return authErr('Please create a password');
+    if (pw.length < 6)   return authErr('Password must be at least 6 characters');
+  }
+
+  setBtnLoading('authSubmit', 'Creating account…');
+  try {
+    let body, path;
+    if (authType === 'student') {
+      body = {
+        first_name: v('sfn'), last_name: v('sln'),
+        email, password: pw,
+        college: v('scollege'), city: v('scity')
+      };
+      path = 'student';
+    } else {
+      body = {
+        college_name: v('ocollege'), email, password: pw,
+        city: v('ocity'), state: v('ostate'), upi_id: v('oupi') || ''
+      };
+      path = 'organizer';
+    }
+
+    const r = await api(`/auth/${path}/register`, 'POST', body);
+
+    // Save token — user is now logged in immediately
+    saveAuth(r, email);
+    closeModal('authOverlay');
+    updateNavUI();
+    showToast(`Account created! Welcome, ${r.name} 🎉`);
+
+    // Redirect to dashboard after short delay
+    setTimeout(() => {
+      window.location = authType === 'student'
+        ? 'pages/student.html'
+        : 'pages/organizer.html#post';
+    }, 800);
+
+  } catch(e) {
+    authErr(e.message || 'Signup failed. Please try again.');
+    resetBtn('authSubmit', authType === 'student' ? 'Create Account' : 'Register & Continue');
+  }
+}
+
+function authErr(msg) {
+  const el = document.getElementById('authErr');
+  if(el){ el.textContent=msg; el.classList.add('show'); }
+}
+function saveAuth(r, email) {
+  S.token=r.token; S.role=r.role; S.name=r.name;
+  localStorage.setItem('hf_token',r.token);
+  localStorage.setItem('hf_role',r.role);
+  localStorage.setItem('hf_name',r.name);
+  if (email) localStorage.setItem('hf_email', email);
+  if (r.college) localStorage.setItem('hf_college', r.college);
+  if (r.city) localStorage.setItem('hf_city', r.city);
+  if (authType === 'student' && authMode === 'signup') {
+    if (v('scollege')) localStorage.setItem('hf_college', v('scollege'));
+    if (v('scity')) localStorage.setItem('hf_city', v('scity'));
+  }
+  if (authType === 'organizer') {
+    if (v('ocollege') || r.name) localStorage.setItem('org_college', v('ocollege') || r.name);
+    if (v('ocity')) localStorage.setItem('org_city', v('ocity'));
+    if (v('oupi')) localStorage.setItem('org_upi', v('oupi'));
+    if (email) localStorage.setItem('org_email', email);
+  }
+}
+
+// ── EVENTS ──────────────────────────────────────────
+let allEvents = [], activeType = 'All';
+const banners = ['g1','g2','g3','g4','g5','g6'];
+
+async function loadEvents() {
+  try {
+    allEvents = await api('/events/');
+    renderEvents(allEvents);
+  } catch(e) {
+    document.getElementById('eventsGrid').innerHTML = '<div style="color:var(--muted);padding:2rem;grid-column:1/-1">Could not load events — make sure the backend is running.<br><small>Run: <code style="color:var(--accent2)">python3 backend/app.py</code></small></div>';
+  }
+}
+function renderEvents(evts) {
+  const grid = document.getElementById('eventsGrid');
+  if (!evts.length) { grid.innerHTML='<div style="color:var(--muted);padding:2rem;grid-column:1/-1">No events found.</div>'; return; }
+  grid.innerHTML = evts.map((e,i) => {
+    const free = !e.registration_fee || e.registration_fee===0;
+    return `<div class="ev-card">
+      <div class="ev-banner ${banners[i%6]}"><span class="ev-type">${e.type}</span></div>
+      <div class="ev-body">
+        <div class="ev-name">${e.name}</div>
+        <div class="ev-college">${e.college}</div>
+        <div class="ev-meta">📍 ${e.city}</div>
+        <div class="ev-meta">📅 ${e.start_date}${e.end_date&&e.end_date!==e.start_date?' → '+e.end_date:''}</div>
+        <div class="ev-meta">👥 Teams ${e.min_team_size}–${e.max_team_size} · ${e.reg_count||0} registered</div>
+        <div class="ev-footer">
+          <span class="prize-badge">${e.prize_pool||'—'}</span>
+          <div style="display:flex;align-items:center;gap:.5rem">
+            <span class="fee-tag ${free?'free-tag':'paid-tag'}">${free?'FREE':'₹'+e.registration_fee}</span>
+            <button class="reg-btn" onclick="event.stopPropagation();register('${e.id}')">Register</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function filterChip(el) {
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  activeType = el.dataset.type;
+  const filtered = activeType==='All' ? allEvents : allEvents.filter(e=>e.type===activeType);
+  renderEvents(filtered);
+}
+
+// ── REGISTER + PAYMENT (4-STEP FLOW) ─────────────────
+let currentEvent = null;
+
+async function register(eventId) {
+  if (!S.token) { showToast('Please login as a student first','err'); openAuth('student','login'); return; }
+  if (S.role !== 'student') { showToast('Only students can register','err'); return; }
+
+  currentEvent = allEvents.find(e => e.id === eventId);
+  if (!currentEvent) return;
+
+  // Pre-fill user info
+  document.getElementById('regFullName').value = S.name || '';
+  document.getElementById('regEmail').value    = localStorage.getItem('hf_email') || '';
+  document.getElementById('regCollege').value  = localStorage.getItem('hf_college') || '';
+  document.getElementById('regCity').value     = localStorage.getItem('hf_city') || '';
+
+  // Set event banner
+  document.getElementById('regEventName').textContent = currentEvent.name;
+  document.getElementById('regEventMeta').textContent = `${currentEvent.college} · ${currentEvent.city}`;
+  const fee = currentEvent.registration_fee || 0;
+  document.getElementById('regEventFee').textContent  = fee === 0 ? 'FREE' : '₹' + fee;
+  document.getElementById('teamSizeHint').textContent =
+    `Teams of ${currentEvent.min_team_size}–${currentEvent.max_team_size} members`;
+
+  // Reset member fields
+  document.getElementById('memberList').innerHTML = '';
+  addMemberField();
+
+  S.regId = null;
+  S.screenshot = '';
+  clearRegErrors();
+  goStep(1);
+  openModal('payOverlay');
+}
+
+function clearRegErrors() {
+  ['regErr1','regErr2','payErr'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('show');
+  });
+}
+
+function addMemberField() {
+  const list = document.getElementById('memberList');
+  const idx  = list.children.length + 1;
+  const div  = document.createElement('div');
+  div.className = 'frow';
+  div.style.marginBottom = '.55rem';
+  div.innerHTML = `
+    <div class="fgroup" style="margin-bottom:0">
+      <input class="finput" placeholder="Member ${idx} name" style="font-size:.83rem">
+    </div>
+    <div class="fgroup" style="margin-bottom:0">
+      <input class="finput" placeholder="Member ${idx} email" type="email" style="font-size:.83rem">
+    </div>`;
+  list.appendChild(div);
+}
+
+function showRegErr(step, msg) {
+  const el = document.getElementById('regErr' + step);
+  if (el) { el.textContent = msg; el.classList.add('show'); }
+}
+
+function regNext(step) {
+  if (step === 1) {
+    // Validate personal details
+    if (!document.getElementById('regCollege').value.trim()) return showRegErr(1,'Please enter your college name');
+    if (!document.getElementById('regCity').value.trim())    return showRegErr(1,'Please enter your city');
+    if (!document.getElementById('regPhone').value.trim())   return showRegErr(1,'Please enter your phone number');
+    if (!document.getElementById('regYear').value)           return showRegErr(1,'Please select your year of study');
+    // Save for future
+    localStorage.setItem('hf_college', document.getElementById('regCollege').value.trim());
+    localStorage.setItem('hf_city',    document.getElementById('regCity').value.trim());
+    document.getElementById('regErr1').classList.remove('show');
+    goStep(2);
+
+  } else if (step === 2) {
+    // Validate team info
+    if (!document.getElementById('regTeamName').value.trim()) return showRegErr(2,'Please enter a team name');
+    document.getElementById('regErr2').classList.remove('show');
+
+    // Fill summary
+    const fee = currentEvent.registration_fee || 0;
+    document.getElementById('sumEvent').textContent   = currentEvent.name;
+    document.getElementById('sumName').textContent    = document.getElementById('regFullName').value || S.name;
+    document.getElementById('sumTeam').textContent    = document.getElementById('regTeamName').value.trim();
+    document.getElementById('sumCollege').textContent = document.getElementById('regCollege').value.trim();
+    document.getElementById('sumAmount').textContent  = fee === 0 ? 'FREE' : '₹' + fee;
+    document.getElementById('payAmt').textContent     = '₹' + fee;
+
+    if (fee === 0) {
+      document.getElementById('freeEventBox').style.display = '';
+      document.getElementById('paidEventBox').style.display = 'none';
+    } else {
+      document.getElementById('freeEventBox').style.display = 'none';
+      document.getElementById('paidEventBox').style.display = '';
+      loadQR();
+    }
+    goStep(3);
+  }
+}
+
+async function loadQR() {
+  try {
+    const qr = await api('/registrations/qr/' + currentEvent.id);
+    document.getElementById('qrBox').innerHTML    = qr.qr_svg || '';
+    document.getElementById('payUpi').textContent = qr.upi_id || 'hackconnect@upi';
+  } catch(e) {
+    document.getElementById('qrBox').innerHTML =
+      '<div style="width:140px;height:140px;background:rgba(255,255,255,.04);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--muted)">QR unavailable</div>';
+  }
+}
+
+async function collectAndRegister() {
+  const members = [];
+  document.getElementById('memberList').querySelectorAll('.frow').forEach(row => {
+    const ins = row.querySelectorAll('input');
+    const n = ins[0]?.value.trim(), e = ins[1]?.value.trim();
+    if (n) members.push(n + (e ? ' <'+e+'>' : ''));
+  });
+  try {
+    const r = await api('/registrations/register', 'POST', {
+      event_id:     currentEvent.id,
+      team_name:    document.getElementById('regTeamName').value.trim(),
+      team_members: members,
+      college:      document.getElementById('regCollege').value.trim(),
+      city:         document.getElementById('regCity').value.trim(),
+      phone:        document.getElementById('regPhone').value.trim(),
+      year:         document.getElementById('regYear').value,
+      skills:       document.getElementById('regSkills').value.trim(),
+      note:         document.getElementById('regNote').value.trim()
+    }, S.token);
+    S.regId = r.registration_id;
+    return r;
+  } catch (e) {
+    if (e.status === 409 && e.data?.registration_id) {
+      S.regId = e.data.registration_id;
+      if (e.data.payment_status === 'free_confirmed' || e.data.payment_status === 'confirmed') {
+        throw new Error('You are already registered for this event');
+      }
+      return e.data;
+    }
+    throw e;
+  }
+}
+
+async function submitFreeReg() {
+  const btn = document.getElementById('freeConfirmBtn');
+  btn.innerHTML = '<span class="spinner"></span>Confirming…'; btn.disabled = true;
+  try {
+    await collectAndRegister();
+    goStep(4);
+    document.getElementById('doneIcon').textContent  = '🎉';
+    document.getElementById('doneTitle').textContent = 'Registration Confirmed!';
+    document.getElementById('doneMsg').innerHTML     =
+      `You're in for <strong style="color:var(--text)">${currentEvent.name}</strong>.<br>
+      This event is free — your spot is confirmed! Check your dashboard.`;
+    showToast('Registered! Your spot is confirmed ✅');
+  } catch(e) {
+    btn.innerHTML = 'Confirm Registration'; btn.disabled = false;
+    showToast(e.message || 'Error', 'err');
+  }
+}
+
+async function submitPayment() {
+  const utr = document.getElementById('utrInput').value.trim();
+  const err = document.getElementById('payErr');
+  err.classList.remove('show');
+  if (!utr) { err.textContent = 'Please enter your UTR / Transaction ID'; err.classList.add('show'); return; }
+
+  const btn = document.getElementById('submitUTR');
+  btn.innerHTML = '<span class="spinner"></span>Submitting…'; btn.disabled = true;
+  try {
+    if (!S.regId) await collectAndRegister();
+    await api(`/registrations/${S.regId}/payment`, 'POST',
+      { utr_number: utr, screenshot_base64: S.screenshot || '' }, S.token);
+    goStep(4);
+    document.getElementById('doneIcon').textContent  = '⏳';
+    document.getElementById('doneTitle').textContent = 'Payment Submitted!';
+    document.getElementById('doneMsg').innerHTML     =
+      `Your UTR <strong style="color:var(--text)">${utr}</strong> has been sent to the organizer of
+      <strong style="color:var(--text)">${currentEvent.name}</strong>.<br><br>
+      They'll verify and confirm your registration within a few hours.`;
+    showToast('Payment submitted! Awaiting organizer approval 🕐');
+  } catch(e) {
+    err.textContent = e.message || 'Submission failed. Please try again.';
+    err.classList.add('show');
+    btn.innerHTML = 'Submit Payment Details'; btn.disabled = false;
+  }
+}
+
+function goStep(step) {
+  [1,2,3,4].forEach(s => {
+    const el = document.getElementById('pStep'+s);
+    if (el) el.style.display = s === step ? '' : 'none';
+    const ps = document.getElementById('ps'+s);
+    if (ps) {
+      ps.classList.remove('active','done');
+      if (s < step)  ps.classList.add('done');
+      if (s === step) ps.classList.add('active');
+    }
+  });
+}
+
+function onFileSelect(evt) {
+  const f = evt.target.files[0]; if(!f) return;
+  const zone = document.getElementById('upZone');
+  zone.innerHTML = '✅ ' + f.name;
+  zone.classList.add('has-file');
+  const rd = new FileReader();
+  rd.onload = e => { S.screenshot = e.target.result; };
+  rd.readAsDataURL(f);
+}
+
+// ── UTILITIES ────────────────────────────────────────
+async function api(path, method='GET', body=null, token=null) {
+  const opts = { method, headers:{'Content-Type':'application/json'} };
+  if (token) opts.headers['Authorization']='Bearer '+token;
+  if (body) opts.body=JSON.stringify(body);
+  const r = await fetch(API+path, opts);
+  const d = await r.json();
+  if (!r.ok) {
+    const err = new Error(d.error || 'HTTP ' + r.status);
+    err.status = r.status;
+    err.data = d;
+    throw err;
+  }
+  return d;
+}
+function v(id){ const el=document.getElementById(id); return el?el.value.trim():''; }
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+function bgClose(e,id){ if(e.target.id===id) closeModal(id); }
+function goDiscover(city){ window.location='pages/discover.html?city='+encodeURIComponent(city); }
+const INFO_CONTENT = {
+  about: { title: 'About HackConnect', body: 'HackConnect is India\'s college tech event discovery platform. Students find hackathons, coding contests, and tech events; organizers post events and manage registrations with built-in UPI payments.' },
+  contact: { title: 'Contact Us', body: 'Email: hello@hackconnect.in\nSupport: support@hackconnect.in\nFor college partnerships: partners@hackconnect.in' },
+  privacy: { title: 'Privacy Policy', body: 'We store account details, event registrations, and payment UTR numbers to operate the platform. Payment screenshots are visible only to event organizers for verification. We do not sell your data.' },
+  terms: { title: 'Terms of Service', body: 'By using HackConnect you agree to provide accurate registration details. Organizers are responsible for verifying payments and running their events. HackConnect facilitates discovery and registration only.' }
+};
+function openInfo(key) {
+  const info = INFO_CONTENT[key];
+  if (!info) return;
+  document.getElementById('infoTitle').textContent = info.title;
+  document.getElementById('infoBody').textContent = info.body;
+  openModal('infoOverlay');
+}
+let _tt;
+function showToast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=(type==='err'?'⚠️ ':'✅ ')+msg;
+  t.className='toast show'+(type==='err'?' err':'');
+  clearTimeout(_tt); _tt=setTimeout(()=>t.classList.remove('show'),4000);
+}
+function setBtnLoading(id,txt){ const b=document.getElementById(id); if(b){b.innerHTML='<span class="spinner"></span>'+txt; b.disabled=true;} }
+function resetBtn(id,txt){ const b=document.getElementById(id); if(b){b.textContent=txt; b.disabled=false;} }
+</script>
+</body>
+</html>
+
