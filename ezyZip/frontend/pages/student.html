@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Dashboard — HackConnect</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#050810;--bg2:#0b0f1a;--bg3:#111827;--accent:#FF4D6D;--accent2:#00F5A0;--accent3:#7B61FF;--text:#F0F4FF;--muted:#8892A4;--border:rgba(255,255,255,0.07);--card:rgba(255,255,255,0.04)}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;display:flex;min-height:100vh}
+
+/* SIDE NAV */
+.sidenav{width:230px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;padding:1.5rem 1rem}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;margin-bottom:2.5rem;padding:0 .5rem;color:var(--text);text-decoration:none}
+.logo span{color:var(--accent)}
+.nsect{font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:0 .5rem;margin:.5rem 0 .4rem;margin-top:1.5rem}
+.nitem{display:flex;align-items:center;gap:.7rem;padding:.6rem .7rem;border-radius:9px;color:var(--muted);font-size:.865rem;font-weight:500;cursor:pointer;transition:all .15s;margin-bottom:.12rem;text-decoration:none}
+.nitem:hover{background:rgba(255,255,255,.04);color:var(--text)}
+.nitem.active{background:rgba(255,77,109,.1);color:var(--accent)}
+.nitem .ic{font-size:.95rem;width:20px;text-align:center}
+.sidenav-bottom{margin-top:auto}
+.user-chip{display:flex;align-items:center;gap:.7rem;padding:.8rem;border:1px solid var(--border);border-radius:12px;background:var(--card);cursor:pointer;transition:all .15s}
+.user-chip:hover{border-color:rgba(123,97,255,.35);background:rgba(123,97,255,.06)}
+.av{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--accent3),var(--accent));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;color:#fff;flex-shrink:0}
+.av-name{font-size:.835rem;font-weight:600}
+.av-meta{font-size:.7rem;color:var(--muted)}
+
+/* MAIN */
+.main{margin-left:230px;flex:1;padding:2.5rem 3rem;min-height:100vh}
+.page-hdr{margin-bottom:2.25rem}
+.page-hdr h1{font-family:'Syne',sans-serif;font-size:1.75rem;font-weight:800;letter-spacing:-.03em;margin-bottom:.25rem}
+.page-hdr p{color:var(--muted);font-size:.875rem}
+
+/* METRICS */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2.25rem}
+.mc{background:var(--bg3);border:1px solid var(--border);border-radius:13px;padding:1.2rem 1.4rem}
+.mc-ic{font-size:1.25rem;margin-bottom:.65rem}
+.mc-val{font-family:'Syne',sans-serif;font-size:1.75rem;font-weight:800}
+.mc-lbl{font-size:.74rem;color:var(--muted);margin-top:.2rem;letter-spacing:.04em;text-transform:uppercase}
+.mc-sub{font-size:.71rem;color:var(--accent2);margin-top:.22rem}
+
+/* SEC HEADER */
+.shdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem}
+.shdr h2{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700}
+.lnk{color:var(--accent);font-size:.82rem;text-decoration:none;cursor:pointer}
+
+/* REGISTRATIONS LIST */
+.reg-list{display:flex;flex-direction:column;gap:.85rem;margin-bottom:2.25rem}
+.reg-card{background:var(--bg3);border:1px solid var(--border);border-radius:13px;padding:1.1rem 1.4rem;display:flex;align-items:center;gap:1.25rem;transition:border-color .2s;flex-wrap:wrap}
+.reg-card:hover{border-color:rgba(255,255,255,.13)}
+.date-box{width:48px;text-align:center;flex-shrink:0;background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.2);border-radius:9px;padding:.45rem 0}
+.date-day{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;color:var(--accent);line-height:1}
+.date-mon{font-size:.65rem;text-transform:uppercase;color:var(--accent);letter-spacing:.08em}
+.reg-info{flex:1;min-width:0}
+.reg-name{font-weight:600;font-size:.92rem;margin-bottom:.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.reg-meta{font-size:.79rem;color:var(--muted)}
+.status-pill{padding:.22rem .7rem;border-radius:100px;font-size:.71rem;font-weight:700;white-space:nowrap;flex-shrink:0}
+.s-confirmed{background:rgba(0,245,160,.1);color:var(--accent2);border:1px solid rgba(0,245,160,.2)}
+.s-pending{background:rgba(123,97,255,.1);color:#a78fff;border:1px solid rgba(123,97,255,.2)}
+.s-submitted{background:rgba(255,165,0,.1);color:#ffb347;border:1px solid rgba(255,165,0,.25)}
+.s-rejected{background:rgba(255,77,109,.1);color:var(--accent);border:1px solid rgba(255,77,109,.2)}
+.pay-now-btn{background:var(--accent);color:#fff;border:none;padding:.35rem .8rem;border-radius:7px;font-size:.76rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;white-space:nowrap;flex-shrink:0}
+.pay-now-btn:hover{background:#ff2d50}
+
+/* BOTTOM GRID */
+.btm-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.card-block{background:var(--bg3);border:1px solid var(--border);border-radius:13px;padding:1.4rem}
+
+/* ACHIEVEMENTS */
+.ach-list{display:flex;flex-direction:column;gap:.75rem}
+.ach-item{display:flex;align-items:center;gap:.9rem}
+.ach-ic{font-size:1.4rem;width:38px;height:38px;background:rgba(255,255,255,.05);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ach-name{font-size:.875rem;font-weight:600}
+.ach-meta{font-size:.75rem;color:var(--muted)}
+
+/* PROFILE */
+.prog-track{height:6px;background:rgba(255,255,255,.07);border-radius:4px;margin-bottom:1rem;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent3),var(--accent));border-radius:4px;transition:width .5s}
+.check-list{display:flex;flex-direction:column;gap:.45rem}
+.chk{display:flex;align-items:center;gap:.55rem;font-size:.82rem;color:var(--muted)}
+.chk-dot{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.6rem;flex-shrink:0}
+.chk.done{color:var(--text)}
+.chk.done .chk-dot{background:rgba(0,245,160,.15);border-color:rgba(0,245,160,.3);color:var(--accent2)}
+
+/* RECOMMEND */
+.rec-list{display:flex;flex-direction:column;gap:.7rem}
+.rec-item{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:9px;padding:.85rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:.75rem;cursor:pointer;transition:border-color .2s}
+.rec-item:hover{border-color:rgba(255,255,255,.13)}
+.rec-name{font-size:.875rem;font-weight:600;margin-bottom:.15rem}
+.rec-meta{font-size:.75rem;color:var(--muted)}
+.rec-prize{font-size:.78rem;color:var(--accent2);font-weight:700;white-space:nowrap}
+
+/* AUTH GATE */
+.auth-gate{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;text-align:center;gap:1rem;padding:2rem}
+.auth-gate h2{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800}
+.auth-gate p{color:var(--muted);max-width:380px;line-height:1.6}
+
+/* PAYMENT MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:1000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .3s}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:20px;width:92%;max-width:470px;padding:2.25rem;position:relative;transform:translateY(20px);transition:all .3s}
+.overlay.open .modal{transform:none}
+.mc2{position:absolute;top:1rem;right:1rem;background:var(--card);border:1px solid var(--border);color:var(--text);width:28px;height:28px;border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem}
+.mttl{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;margin-bottom:.25rem}
+.msub{color:var(--muted);font-size:.855rem;margin-bottom:1.5rem}
+.psteps{display:flex;background:rgba(255,255,255,.03);border-radius:9px;overflow:hidden;margin-bottom:1.5rem}
+.pst{flex:1;padding:.5rem;text-align:center;font-size:.72rem;color:var(--muted);font-weight:500;border-bottom:2px solid transparent;transition:all .2s}
+.pst.done{color:var(--accent2);border-color:var(--accent2)}
+.pst.active{color:var(--accent3);border-color:var(--accent3)}
+.qr-c{text-align:center;margin:1rem 0}
+.qr-box{display:inline-block;background:#fff;border-radius:11px;padding:10px;margin-bottom:.6rem}
+.upi-id{font-family:monospace;font-size:.9rem;font-weight:700;color:var(--accent2);background:rgba(0,245,160,.08);border:1px solid rgba(0,245,160,.2);border-radius:8px;padding:.42rem .9rem;display:inline-block}
+.pay-amt{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;margin:.35rem 0}
+.hint{background:rgba(255,255,255,.03);border-radius:9px;padding:.85rem;font-size:.78rem;color:var(--muted);line-height:1.65;margin:.9rem 0}
+.fgroup{margin-bottom:1rem}
+.flbl{display:block;font-size:.75rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:.35rem}
+.finput{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:9px;padding:.65rem .9rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.875rem;outline:none;transition:border-color .2s}
+.finput:focus{border-color:rgba(255,255,255,.22)}
+.finput::placeholder{color:var(--muted);opacity:.6}
+.upzone{border:1px dashed var(--border);border-radius:9px;padding:1rem;text-align:center;cursor:pointer;transition:all .2s;font-size:.8rem;color:var(--muted)}
+.upzone:hover{border-color:rgba(123,97,255,.4);color:var(--accent3)}
+.upzone.has{border-color:rgba(0,245,160,.4);color:var(--accent2)}
+.upzone input{display:none}
+.errbox{background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.25);color:var(--accent);border-radius:8px;padding:.55rem .85rem;font-size:.81rem;margin-bottom:.9rem;display:none}
+.errbox.show{display:block}
+.mbtn{width:100%;padding:.78rem;border-radius:10px;font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;cursor:pointer;border:none;color:#fff;transition:all .2s;margin-top:.35rem}
+.mbtn.purple{background:var(--accent3)}
+.mbtn.purple:hover{background:#6a50ff}
+.mbtn.red{background:var(--accent)}
+.mbtn.red:hover{background:#ff2d50}
+.mbtn:disabled{background:rgba(255,255,255,.08)!important;color:var(--muted);cursor:not-allowed}
+
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid rgba(0,245,160,.3);border-radius:11px;padding:.85rem 1.1rem;display:flex;align-items:center;gap:.6rem;font-size:.855rem;z-index:9999;transform:translateY(70px);opacity:0;transition:all .3s;max-width:320px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.err{border-color:rgba(255,77,109,.3)}
+.spin{width:15px;height:15px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;display:inline-block;vertical-align:middle;margin-right:4px}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media(max-width:900px){.sidenav{display:none}.main{margin-left:0;padding:1.5rem}.metrics{grid-template-columns:repeat(2,1fr)}.btm-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="sidenav">
+  <a href="/" class="logo">Hack<span>Fest</span></a>
+  <div class="nsect">Main</div>
+  <div class="nitem active"><span class="ic">🏠</span>Dashboard</div>
+  <a href="discover.html" class="nitem"><span class="ic">🔍</span>Discover Events</a>
+  <div class="nitem" onclick="scrollToSection('regsSection')"><span class="ic">📋</span>My Registrations</div>
+  <div class="nsect">Profile</div>
+  <div class="nitem" onclick="scrollToSection('achSection')"><span class="ic">🏆</span>Achievements</div>
+  <div class="nitem" onclick="scrollToSection('certSection')"><span class="ic">📜</span>Certificates</div>
+  <div class="nsect">Account</div>
+  <div class="nitem" onclick="doLogout()"><span class="ic">🚪</span>Logout</div>
+  <div class="sidenav-bottom">
+    <div class="user-chip" onclick="scrollToSection('profileSection')" title="View your profile">
+      <div class="av" id="navAv">?</div>
+      <div><div class="av-name" id="navName">—</div><div class="av-meta" id="navCollege">—</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <!-- AUTH GATE -->
+  <div id="authGate" class="auth-gate" style="display:none">
+    <div style="font-size:3rem">🎓</div>
+    <h2>Student Login Required</h2>
+    <p>Login to your student account to view your dashboard, registrations, and achievements.</p>
+    <a href="../index.html?login=student" style="background:var(--accent);color:#fff;padding:.75rem 1.75rem;border-radius:10px;font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;text-decoration:none">Login on Home Page →</a>
+    <div style="font-size:.78rem;color:var(--muted);margin-top:.5rem">Demo: <strong style="color:var(--text)">aarav@mit.edu / student123</strong></div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dash">
+    <div class="page-hdr">
+      <h1 id="greet">Good morning 👋</h1>
+      <p id="greetSub">Loading your dashboard…</p>
+    </div>
+
+    <div class="metrics">
+      <div class="mc"><div class="mc-ic">⚡</div><div class="mc-val" id="m1">—</div><div class="mc-lbl">Events Joined</div></div>
+      <div class="mc"><div class="mc-ic">✅</div><div class="mc-val" id="m2">—</div><div class="mc-lbl">Confirmed</div><div class="mc-sub" id="m2sub"></div></div>
+      <div class="mc"><div class="mc-ic">⏳</div><div class="mc-val" id="m3">—</div><div class="mc-lbl">Awaiting Approval</div></div>
+      <div class="mc"><div class="mc-ic">🏆</div><div class="mc-val">3</div><div class="mc-lbl">Achievements</div></div>
+    </div>
+
+    <div class="shdr" id="regsSection">
+      <h2>My Registrations</h2>
+      <a href="discover.html" class="lnk">Browse more →</a>
+    </div>
+    <div class="reg-list" id="regList"><div style="color:var(--muted);font-size:.875rem">Loading…</div></div>
+
+    <div class="btm-grid">
+      <div class="card-block">
+        <div class="shdr"><h2>Recommended Events</h2><a href="discover.html" class="lnk">All events →</a></div>
+        <div class="rec-list" id="recList"><div style="color:var(--muted);font-size:.875rem">Loading…</div></div>
+      </div>
+      <div class="card-block" id="profileSection">
+        <div class="shdr"><h2>Profile Completion</h2><span style="font-size:.82rem;color:var(--muted)">72%</span></div>
+        <div class="prog-track"><div class="prog-fill" style="width:72%"></div></div>
+        <div class="check-list">
+          <div class="chk done"><div class="chk-dot">✓</div>Basic info filled</div>
+          <div class="chk done"><div class="chk-dot">✓</div>College verified</div>
+          <div class="chk done"><div class="chk-dot">✓</div>Skills added</div>
+          <div class="chk"><div class="chk-dot"></div>Add GitHub / LinkedIn</div>
+          <div class="chk"><div class="chk-dot"></div>Upload profile photo</div>
+        </div>
+        <div class="shdr" style="margin-top:1.5rem" id="achSection"><h2>Achievements</h2></div>
+        <div class="ach-list">
+          <div class="ach-item"><div class="ach-ic">🥉</div><div><div class="ach-name">2nd Runner Up</div><div class="ach-meta">HackSRM 4.0 · Dec 2024</div></div></div>
+          <div class="ach-item"><div class="ach-ic">⭐</div><div><div class="ach-name">Top 10 Finisher</div><div class="ach-meta">CodeStorm 2024 · Oct 2024</div></div></div>
+          <div class="ach-item"><div class="ach-ic">🎯</div><div><div class="ach-name">Best UI/UX Award</div><div class="ach-meta">InnovateMIT 2024 · Aug 2024</div></div></div>
+        </div>
+        <div class="shdr" style="margin-top:1.5rem" id="certSection"><h2>Certificates</h2></div>
+        <div class="ach-list" id="certList">
+          <div style="color:var(--muted);font-size:.875rem">Certificates appear here after events confirm your registration.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="overlay" id="payOvl" onclick="if(event.target.id==='payOvl')closePayModal()">
+  <div class="modal">
+    <button class="mc2" onclick="closePayModal()">✕</button>
+    <div class="mttl" id="pmTitle">Complete Payment</div>
+    <div class="msub" id="pmSub">Pay via UPI to confirm</div>
+    <div class="psteps">
+      <div class="pst active" id="st1">1 · Scan & Pay</div>
+      <div class="pst" id="st2">2 · Submit UTR</div>
+      <div class="pst" id="st3">3 · Done</div>
+    </div>
+    <div id="ps1">
+      <div class="qr-c">
+        <div class="qr-box" id="qrBox"></div>
+        <div style="font-size:.77rem;color:var(--muted)">Pay exactly</div>
+        <div class="pay-amt" id="pmAmt">₹0</div>
+        <div class="upi-id" id="pmUpi">loading…</div>
+      </div>
+      <div class="hint">📱 Open GPay / PhonePe / Paytm / BHIM<br>→ Scan QR or enter UPI ID manually<br>→ Pay the exact amount<br>→ Note your <strong style="color:var(--text)">UTR / Transaction ID</strong></div>
+      <button class="mbtn purple" onclick="gostep(2)">I've paid → Enter UTR</button>
+    </div>
+    <div id="ps2" style="display:none">
+      <div class="fgroup"><label class="flbl">UTR / Transaction ID *</label><input class="finput" id="utrIn" placeholder="e.g. UTR123456789012"></div>
+      <div class="fgroup">
+        <label class="flbl">Screenshot (optional)</label>
+        <div class="upzone" id="upz" onclick="document.getElementById('ssf').click()">
+          <input type="file" id="ssf" accept="image/*" onchange="onss(event)">📷 Upload payment screenshot
+        </div>
+      </div>
+      <div class="errbox" id="perr"></div>
+      <button class="mbtn purple" id="subBtn" onclick="submitPay()">Submit & Notify Organiser</button>
+      <div style="text-align:center;margin-top:.7rem"><a style="color:var(--muted);font-size:.79rem;cursor:pointer" onclick="gostep(1)">← Back</a></div>
+    </div>
+    <div id="ps3" style="display:none;text-align:center;padding:.75rem 0">
+      <div style="font-size:3rem;margin-bottom:.75rem">🎉</div>
+      <div class="mttl">Payment Submitted!</div>
+      <p style="color:var(--muted);font-size:.875rem;line-height:1.65;margin:1rem 0 1.5rem">Your UTR has been sent to the organiser.<br>They'll verify and confirm your spot.</p>
+      <button class="mbtn red" onclick="closePayModal();loadRegs()">View Registrations</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '/api';
+const tok  = localStorage.getItem('hf_token');
+const role = localStorage.getItem('hf_role');
+const name = localStorage.getItem('hf_name');
+let curRegId = '', curEventId = '', ss = '';
+
+if (!tok || role !== 'student') {
+  document.getElementById('dash').style.display = 'none';
+  document.getElementById('authGate').style.display = 'flex';
+} else {
+  initDash();
+}
+
+async function initDash() {
+  const initials = name ? name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() : '?';
+  document.getElementById('navAv').textContent = initials;
+  document.getElementById('navName').textContent = name || '—';
+
+  const hr = new Date().getHours();
+  document.getElementById('greet').textContent = `${hr<12?'Good morning':hr<17?'Good afternoon':'Good evening'}, ${name ? name.split(' ')[0] : 'there'} 👋`;
+
+  try {
+    const profile = await apicall('/auth/student/profile', 'GET', null, tok);
+    document.getElementById('navCollege').textContent = profile.college || localStorage.getItem('hf_college') || '—';
+    if (profile.college) localStorage.setItem('hf_college', profile.college);
+    if (profile.city) localStorage.setItem('hf_city', profile.city);
+    if (profile.email) localStorage.setItem('hf_email', profile.email);
+  } catch(e) {
+    document.getElementById('navCollege').textContent = localStorage.getItem('hf_college') || '—';
+  }
+
+  await Promise.all([loadRegs(), loadRecs()]);
+}
+
+async function loadRegs() {
+  try {
+    const regs = await apicall('/registrations/my','GET',null,tok);
+    document.getElementById('greetSub').textContent = `You have ${regs.length} event registration${regs.length!==1?'s':''}.`;
+    document.getElementById('m1').textContent = regs.length;
+    const confirmed = regs.filter(r=>r.payment_status==='confirmed'||r.payment_status==='free_confirmed').length;
+    const pending   = regs.filter(r=>r.payment_status==='payment_submitted').length;
+    const unpaid    = regs.filter(r=>r.payment_status==='pending_payment').length;
+    document.getElementById('m2').textContent = confirmed;
+    document.getElementById('m3').textContent = pending;
+    if (unpaid) document.getElementById('m2sub').textContent = `${unpaid} unpaid`;
+
+    if (!regs.length) { document.getElementById('regList').innerHTML='<div style="color:var(--muted);font-size:.875rem;padding:.5rem 0">No registrations yet. <a href="discover.html" style="color:var(--accent)">Browse events →</a></div>'; return; }
+
+    const statusMap = {
+      confirmed:        ['s-confirmed','✅ Confirmed'],
+      free_confirmed:   ['s-confirmed','✅ Free Event'],
+      pending_payment:  ['s-pending','💳 Payment Pending'],
+      payment_submitted:['s-submitted','⏳ Awaiting Approval'],
+      rejected:         ['s-rejected','❌ Rejected']
+    };
+
+    document.getElementById('regList').innerHTML = regs.map(r => {
+      const [cls, lbl] = statusMap[r.payment_status] || ['s-pending', r.payment_status];
+      const dateParts  = (r.start_date||'').split('-');
+      const months     = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const day        = dateParts[2]||'?';
+      const mon        = months[parseInt(dateParts[1]||1)-1]||'';
+      const greyDate   = r.payment_status==='rejected'||r.payment_status==='free_confirmed';
+      return `<div class="reg-card">
+        <div class="date-box" style="${greyDate?'background:rgba(255,255,255,.04);border-color:var(--border)':''}">
+          <div class="date-day" style="${greyDate?'color:var(--muted)':''}">${day}</div>
+          <div class="date-mon" style="${greyDate?'color:var(--muted)':''}">${mon}</div>
+        </div>
+        <div class="reg-info">
+          <div class="reg-name">${r.event_name}</div>
+          <div class="reg-meta">${r.event_college} · ${r.event_city} · ${r.event_type}${r.team_name?' · '+r.team_name:''}</div>
+        </div>
+        <span class="status-pill ${cls}">${lbl}</span>
+        ${(r.payment_status==='pending_payment'||r.payment_status==='rejected')?`<button class="pay-now-btn" onclick="openPayRetry('${r.event_id}','${r.id}',${r.registration_fee})">${r.payment_status==='rejected'?'Retry Payment':'Pay Now'}</button>`:''}
+      </div>`;
+    }).join('');
+
+    const certs = regs.filter(r => r.payment_status==='confirmed' || r.payment_status==='free_confirmed');
+    const certEl = document.getElementById('certList');
+    if (!certs.length) {
+      certEl.innerHTML = '<div style="color:var(--muted);font-size:.875rem">No certificates yet. Complete an event registration to unlock certificates.</div>';
+    } else {
+      certEl.innerHTML = certs.map(r => `
+        <div class="ach-item">
+          <div class="ach-ic">📜</div>
+          <div><div class="ach-name">${r.event_name}</div><div class="ach-meta">${r.event_college} · ${r.start_date || 'TBD'}</div></div>
+        </div>`).join('');
+    }
+  } catch(e) {
+    document.getElementById('regList').innerHTML=`<div style="color:var(--muted)">Error loading registrations: ${e.message}</div>`;
+  }
+}
+
+async function loadRecs() {
+  try {
+    const evts = await apicall('/events/');
+    const recEl = document.getElementById('recList');
+    if (!evts.length) { recEl.innerHTML='<div style="color:var(--muted);font-size:.875rem">No events found.</div>'; return; }
+    recEl.innerHTML = evts.slice(0,3).map(e => `
+      <div class="rec-item" onclick="window.location='discover.html'">
+        <div><div class="rec-name">${e.name}</div><div class="rec-meta">${e.start_date} · ${e.type}</div></div>
+        <span class="rec-prize">${e.prize_pool||'—'}</span>
+      </div>`).join('');
+  } catch(e) {}
+}
+
+// ── PAY RETRY ───────────────────────────────────────
+async function openPayRetry(eventId, regId, fee) {
+  curRegId = regId; curEventId = eventId;
+  try {
+    const qr = await apicall('/registrations/qr/'+eventId);
+    document.getElementById('pmAmt').textContent = '₹'+fee;
+    document.getElementById('pmUpi').textContent = qr.upi_id||'hackconnect@upi';
+    document.getElementById('qrBox').innerHTML = qr.qr_svg||'';
+    document.getElementById('pmTitle').textContent = qr.event_name||'Complete Payment';
+    document.getElementById('pmSub').textContent = 'Pay via UPI to confirm your spot';
+    gostep(1);
+    document.getElementById('payOvl').classList.add('open');
+  } catch(e) { toast(e.message||'Could not load QR','err'); }
+}
+
+function gostep(n) {
+  [1,2,3].forEach(i=>{
+    document.getElementById('ps'+i).style.display=i===n?'':'none';
+    const el=document.getElementById('st'+i);
+    el.classList.remove('active','done');
+    if(i<n)el.classList.add('done');
+    if(i===n)el.classList.add('active');
+  });
+}
+function onss(evt) {
+  const f=evt.target.files[0];if(!f)return;
+  document.getElementById('upz').textContent='✅ '+f.name;
+  document.getElementById('upz').classList.add('has');
+  const rd=new FileReader();rd.onload=e=>ss=e.target.result;rd.readAsDataURL(f);
+}
+async function submitPay() {
+  const utr=document.getElementById('utrIn').value.trim();
+  const err=document.getElementById('perr');
+  err.classList.remove('show');
+  if(!utr){err.textContent='Enter UTR / Transaction ID';err.classList.add('show');return;}
+  const b=document.getElementById('subBtn');
+  b.innerHTML='<span class="spin"></span>Submitting…';b.disabled=true;
+  try {
+    await apicall('/registrations/'+curRegId+'/payment','POST',{utr_number:utr,screenshot_base64:ss||''},tok);
+    gostep(3); toast('Payment submitted! Organiser will verify soon 🕐');
+  } catch(e){err.textContent=e.message||'Failed';err.classList.add('show');b.textContent='Submit & Notify Organiser';b.disabled=false;}
+}
+function closePayModal() {
+  document.getElementById('payOvl').classList.remove('open');
+  document.getElementById('utrIn').value = '';
+  document.getElementById('upz').textContent = '📷 Upload payment screenshot';
+  document.getElementById('upz').classList.remove('has');
+  ss = '';
+  gostep(1);
+}
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  document.querySelectorAll('.nitem').forEach(n => n.classList.remove('active'));
+}
+function doLogout() {
+  localStorage.removeItem('hf_token');
+  localStorage.removeItem('hf_role');
+  localStorage.removeItem('hf_name');
+  localStorage.removeItem('org_token');
+  localStorage.removeItem('org_name');
+  window.location = '../index.html';
+}
+
+async function apicall(path,method='GET',body=null,token=null){
+  const opts={method,headers:{'Content-Type':'application/json'}};
+  if(token)opts.headers['Authorization']='Bearer '+token;
+  if(body)opts.body=JSON.stringify(body);
+  const r=await fetch(API+path,opts);
+  const d=await r.json();
+  if(!r.ok)throw new Error(d.error||'HTTP '+r.status);
+  return d;
+}
+let _tt;
+function toast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=(type==='err'?'⚠️ ':'✅ ')+msg;
+  t.className='toast show'+(type==='err'?' err':'');
+  clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),4000);
+}
+</script>
+</body>
+</html>
+
